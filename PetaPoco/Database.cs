@@ -44,7 +44,14 @@ namespace PetaPoco
         {
             _sharedConnection = connection;
             _connectionString = connection.ConnectionString;
-            _sharedConnectionDepth = 2;		// Prevent closing external connection
+            if (connection.State == ConnectionState.Broken)
+            {
+                connection.Close();
+            }
+            if (connection.State != ConnectionState.Closed)
+            {
+                _sharedConnectionDepth = 2;		// Prevent closing already open external connection
+            }
             CommonConstruct();
         }
 
