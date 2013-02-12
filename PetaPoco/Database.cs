@@ -2143,7 +2143,7 @@ namespace PetaPoco
                 {
                     sqlExpression.Append(" AND ");
                 }
-                sqlExpression.Append(string.Format("{0}=@{1}", _dbType.EscapeSqlIdentifier(PrimaryKeyName), i));
+                sqlExpression.Append(string.Format("{0}={1}{2}", _dbType.EscapeSqlIdentifier(PrimaryKeyName), _paramPrefix, i));
                 i++;
             }
             return sqlExpression.ToString();
