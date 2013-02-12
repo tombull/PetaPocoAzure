@@ -2385,9 +2385,9 @@ namespace PetaPoco
 			autoIncrement = true;
 		}
 
-		public PrimaryKeyAttribute(IList<string> primaryKeys)
+		public PrimaryKeyAttribute(string[] primaryKeys)
 		{
-			Value = primaryKeys;
+			Value = primaryKeys.ToList();
 			autoIncrement = true;
 		}
 
