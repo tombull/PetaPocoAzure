@@ -150,10 +150,10 @@ namespace PetaPoco
 		/// <summary>
 		/// When set to true the first opened connection is kept alive until this object is disposed
 		/// </summary>
-		public bool KeepConnectionAlive 
-		{ 
-			get; 
-			set; 
+		public bool KeepConnectionAlive
+		{
+			get;
+			set;
 		}
 
 		/// <summary>
@@ -243,15 +243,15 @@ namespace PetaPoco
 		/// Called when a transaction starts.  Overridden by the T4 template generated database
 		/// classes to ensure the same DB instance is used throughout the transaction.
 		/// </summary>
-		public virtual void OnBeginTransaction() 
-		{ 
+		public virtual void OnBeginTransaction()
+		{
 		}
 
 		/// <summary>
 		/// Called when a transaction ends.
 		/// </summary>
-		public virtual void OnEndTransaction() 
-		{ 
+		public virtual void OnEndTransaction()
+		{
 		}
 
 		/// <summary>
@@ -370,7 +370,7 @@ namespace PetaPoco
 				{
 					// out of memory exception occurs if trying to save more than 4000 characters to SQL Server CE NText column. Set before attempting to set Size, or Size will always max out at 4000
 					if ((value as string).Length + 1 > 4000 && p.GetType().Name == "SqlCeParameter")
-						p.GetType().GetProperty("SqlDbType").SetValue(p, SqlDbType.NText, null); 
+						p.GetType().GetProperty("SqlDbType").SetValue(p, SqlDbType.NText, null);
 
 					p.Size = Math.Max((value as string).Length + 1, 4000);		// Help query plan caching by using common size
 					p.Value = value;
@@ -464,17 +464,17 @@ namespace PetaPoco
 		/// Override this method to provide custom logging of opening connection, or
 		/// to provide a proxy IDbConnection.
 		/// </remarks>
-		public virtual IDbConnection OnConnectionOpened(IDbConnection conn) 
-		{ 
-			return conn; 
+		public virtual IDbConnection OnConnectionOpened(IDbConnection conn)
+		{
+			return conn;
 		}
 
 		/// <summary>
 		/// Called when DB connection closed
 		/// </summary>
 		/// <param name="conn">The soon to be closed IDBConnection</param>
-		public virtual void OnConnectionClosing(IDbConnection conn) 
-		{ 
+		public virtual void OnConnectionClosing(IDbConnection conn)
+		{
 		}
 
 		/// <summary>
@@ -485,21 +485,21 @@ namespace PetaPoco
 		/// Override this method to provide custom logging of commands and/or
 		/// modification of the IDbCommand before it's executed
 		/// </remarks>
-		public virtual void OnExecutingCommand(IDbCommand cmd) 
-		{ 
+		public virtual void OnExecutingCommand(IDbCommand cmd)
+		{
 		}
 
 		/// <summary>
 		/// Called on completion of command execution
 		/// </summary>
 		/// <param name="cmd">The IDbCommand that finished executing</param>
-		public virtual void OnExecutedCommand(IDbCommand cmd) 
-		{ 
+		public virtual void OnExecutedCommand(IDbCommand cmd)
+		{
 		}
 
 		#endregion
 
-		#region operation: Execute 
+		#region operation: Execute
 		/// <summary>
 		/// Executes a non-query command
 		/// </summary>
@@ -515,7 +515,7 @@ namespace PetaPoco
 				{
 					using (var cmd = CreateCommand(_sharedConnection, sql, args))
 					{
-						var retv=cmd.ExecuteNonQuery();
+						var retv = cmd.ExecuteNonQuery();
 						OnExecutedCommand(cmd);
 						return retv;
 					}
@@ -536,7 +536,7 @@ namespace PetaPoco
 		/// <summary>
 		/// Executes a non-query command
 		/// </summary>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>The number of rows affected</returns>
 		public int Execute(Sql sql)
 		{
@@ -568,10 +568,10 @@ namespace PetaPoco
 
 						// Handle nullable types
 						Type u = Nullable.GetUnderlyingType(typeof(T));
-						if (u != null && val == null) 
+						if (u != null && val == null)
 							return default(T);
 
-						return (T)Convert.ChangeType(val, u==null ? typeof(T) : u);
+						return (T)Convert.ChangeType(val, u == null ? typeof(T) : u);
 					}
 				}
 				finally
@@ -591,7 +591,7 @@ namespace PetaPoco
 		/// Executes a query and return the first column of the first row in the result set.
 		/// </summary>
 		/// <typeparam name="T">The type that the result value should be cast to</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>The scalar value cast to T</returns>
 		public T ExecuteScalar<T>(Sql sql)
 		{
@@ -609,7 +609,7 @@ namespace PetaPoco
 		/// <param name="sql">The SQL query to execute</param>
 		/// <param name="args">Arguments to any embedded parameters in the SQL</param>
 		/// <returns>A List holding the results of the query</returns>
-		public List<T> Fetch<T>(string sql, params object[] args) 
+		public List<T> Fetch<T>(string sql, params object[] args)
 		{
 			return Query<T>(sql, args).ToList();
 		}
@@ -618,9 +618,9 @@ namespace PetaPoco
 		/// Runs a query and returns the result set as a typed list
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A List holding the results of the query</returns>
-		public List<T> Fetch<T>(Sql sql) 
+		public List<T> Fetch<T>(Sql sql)
 		{
 			return Fetch<T>(sql.SQL, sql.Arguments);
 		}
@@ -640,7 +640,7 @@ namespace PetaPoco
 		/// <param name="args">Arguments to any embedded parameters in the SQL</param>
 		/// <param name="sqlCount">Outputs the SQL statement to query for the total number of matching rows</param>
 		/// <param name="sqlPage">Outputs the SQL statement to retrieve a single page of matching rows</param>
-		void BuildPageQueries<T>(long skip, long take, string sql, ref object[] args, out string sqlCount, out string sqlPage) 
+		void BuildPageQueries<T>(long skip, long take, string sql, ref object[] args, out string sqlCount, out string sqlPage)
 		{
 			// Add auto select clause
 			if (EnableAutoSelect)
@@ -711,10 +711,10 @@ namespace PetaPoco
 		/// records for the specified page.  It will also execute a second query to retrieve the
 		/// total number of records in the result set.
 		/// </remarks>
-		public Page<T> Page<T>(long page, long itemsPerPage, string sql, params object[] args) 
+		public Page<T> Page<T>(long page, long itemsPerPage, string sql, params object[] args)
 		{
 			string sqlCount, sqlPage;
-			BuildPageQueries<T>((page-1)*itemsPerPage, itemsPerPage, sql, ref args, out sqlCount, out sqlPage);
+			BuildPageQueries<T>((page - 1) * itemsPerPage, itemsPerPage, sql, ref args, out sqlCount, out sqlPage);
 			return Page<T>(page, itemsPerPage, sqlCount, args, sqlPage, args);
 		}
 
@@ -724,7 +724,7 @@ namespace PetaPoco
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
 		/// <param name="page">The 1 based page number to retrieve</param>
 		/// <param name="itemsPerPage">The number of records per page</param>
-		/// <param name="sql">An SQL builder object representing the base SQL query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the base SQL query and it's arguments</param>
 		/// <returns>A Page of results</returns>
 		/// <remarks>
 		/// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
@@ -742,8 +742,8 @@ namespace PetaPoco
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
 		/// <param name="page">The 1 based page number to retrieve</param>
 		/// <param name="itemsPerPage">The number of records per page</param>
-		/// <param name="sqlCount">An SQL builder object representing the SQL to retrieve the total number of records</param>
-		/// <param name="sqlPage">An SQL builder object representing the SQL to retrieve a single page of results</param>
+		/// <param name="sqlCount">a SQL builder object representing the SQL to retrieve the total number of records</param>
+		/// <param name="sqlPage">a SQL builder object representing the SQL to retrieve a single page of results</param>
 		/// <returns>A Page of results</returns>
 		/// <remarks>
 		/// This method allows separate SQL statements to be explicitly provided for the two parts of the page query.
@@ -782,7 +782,7 @@ namespace PetaPoco
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
 		/// <param name="page">The 1 based page number to retrieve</param>
 		/// <param name="itemsPerPage">The number of records per page</param>
-		/// <param name="sql">An SQL builder object representing the base SQL query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the base SQL query and it's arguments</param>
 		/// <returns>A List of results</returns>
 		/// <remarks>
 		/// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
@@ -823,7 +823,7 @@ namespace PetaPoco
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
 		/// <param name="skip">The number of rows at the start of the result set to skip over</param>
 		/// <param name="take">The number of rows to retrieve</param>
-		/// <param name="sql">An SQL builder object representing the base SQL query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the base SQL query and it's arguments</param>
 		/// <returns>A List of results</returns>
 		/// <remarks>
 		/// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
@@ -838,7 +838,7 @@ namespace PetaPoco
 		#region operation: Query
 
 		/// <summary>
-		/// Runs an SQL query, returning the results as an IEnumerable collection
+		/// Runs a SQL query, returning the results as an IEnumerable collection
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
 		/// <param name="sql">The SQL query</param>
@@ -849,7 +849,7 @@ namespace PetaPoco
 		/// and disposing the previous one. In cases where this is an issue, consider using Fetch which
 		/// returns the results as a List rather than an IEnumerable.
 		/// </remarks>
-		public IEnumerable<T> Query<T>(string sql, params object[] args) 
+		public IEnumerable<T> Query<T>(string sql, params object[] args)
 		{
 			if (EnableAutoSelect)
 				sql = AutoSelectHelper.AddSelectClause<T>(_dbType, sql);
@@ -903,10 +903,10 @@ namespace PetaPoco
 		}
 
 		/// <summary>
-		/// Runs an SQL query, returning the results as an IEnumerable collection
+		/// Runs a SQL query, returning the results as an IEnumerable collection
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
-		/// <param name="sql">An SQL builder object representing the base SQL query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the base SQL query and it's arguments</param>
 		/// <returns>An enumerable collection of result records</returns>
 		/// <remarks>
 		/// For some DB providers, care should be taken to not start a new Query before finishing with
@@ -940,11 +940,11 @@ namespace PetaPoco
 		/// Checks for the existance of a row with the specified primary key value.
 		/// </summary>
 		/// <typeparam name="T">The Type representing the table being queried</typeparam>
-		/// <param name="primaryKey">The primary key value to look for</param>
-		/// <returns>True if a record with the specified primary key value exists.</returns>
-		public bool Exists<T>(object primaryKey)
+		/// <param name="primaryKeys">The primary key values to look for</param>
+		/// <returns>True if a record with the specified primary key values exists.</returns>
+		public bool Exists<T>(params object[] primaryKeys)
 		{
-			return Exists<T>(string.Format("{0}=@0", _dbType.EscapeSqlIdentifier(PocoData.ForType(typeof(T)).TableInfo.PrimaryKey)), primaryKey);
+			return Exists<T>(BuildPrimaryKeyMatchingSql<T>(), primaryKeys);
 		}
 
 		#endregion
@@ -955,28 +955,28 @@ namespace PetaPoco
 		/// Returns the record with the specified primary key value
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
-		/// <param name="primaryKey">The primary key value of the record to fetch</param>
-		/// <returns>The single record matching the specified primary key value</returns>
+		/// <param name="primaryKeys">The primary key values of the record to fetch</param>
+		/// <returns>The single record matching the specified primary key values</returns>
 		/// <remarks>
-		/// Throws an exception if there are zero or more than one record with the specified primary key value.
+		/// Throws an exception if there are zero or more than one record with the specified primary key values.
 		/// </remarks>
-		public T Single<T>(object primaryKey) 
+		public T Single<T>(params object[] primaryKeys)
 		{
-			return Single<T>(string.Format("WHERE {0}=@0", _dbType.EscapeSqlIdentifier(PocoData.ForType(typeof(T)).TableInfo.PrimaryKey)), primaryKey);
+			return Single<T>("WHERE " + BuildPrimaryKeyMatchingSql<T>(), primaryKeys);
 		}
 
 		/// <summary>
-		/// Returns the record with the specified primary key value, or the default value if not found
+		/// Returns the record with the specified primary key values, or the default value if not found
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
-		/// <param name="primaryKey">The primary key value of the record to fetch</param>
-		/// <returns>The single record matching the specified primary key value</returns>
+		/// <param name="primaryKeys">The primary key values of the record to fetch</param>
+		/// <returns>The single record matching the specified primary key values</returns>
 		/// <remarks>
-		/// If there are no records with the specified primary key value, default(T) (typically null) is returned.
+		/// If there are no records with the specified primary key values, default(T) (typically null) is returned.
 		/// </remarks>
-		public T SingleOrDefault<T>(object primaryKey) 
+		public T SingleOrDefault<T>(params object[] primaryKeys)
 		{
-			return SingleOrDefault<T>(string.Format("WHERE {0}=@0", _dbType.EscapeSqlIdentifier(PocoData.ForType(typeof(T)).TableInfo.PrimaryKey)), primaryKey);
+			return SingleOrDefault<T>("WHERE " + BuildPrimaryKeyMatchingSql<T>(), primaryKeys);
 		}
 
 		/// <summary>
@@ -989,7 +989,7 @@ namespace PetaPoco
 		/// <remarks>
 		/// Throws an exception if there are zero or more than one matching record
 		/// </remarks>
-		public T Single<T>(string sql, params object[] args) 
+		public T Single<T>(string sql, params object[] args)
 		{
 			return Query<T>(sql, args).Single();
 		}
@@ -1001,7 +1001,7 @@ namespace PetaPoco
 		/// <param name="sql">The SQL query</param>
 		/// <param name="args">Arguments to any embedded parameters in the SQL statement</param>
 		/// <returns>The single record matching the specified primary key value, or default(T) if no matching rows</returns>
-		public T SingleOrDefault<T>(string sql, params object[] args) 
+		public T SingleOrDefault<T>(string sql, params object[] args)
 		{
 			return Query<T>(sql, args).SingleOrDefault();
 		}
@@ -1013,7 +1013,7 @@ namespace PetaPoco
 		/// <param name="sql">The SQL query</param>
 		/// <param name="args">Arguments to any embedded parameters in the SQL statement</param>
 		/// <returns>The first record in the result set</returns>
-		public T First<T>(string sql, params object[] args) 
+		public T First<T>(string sql, params object[] args)
 		{
 			return Query<T>(sql, args).First();
 		}
@@ -1025,7 +1025,7 @@ namespace PetaPoco
 		/// <param name="sql">The SQL query</param>
 		/// <param name="args">Arguments to any embedded parameters in the SQL statement</param>
 		/// <returns>The first record in the result set, or default(T) if no matching rows</returns>
-		public T FirstOrDefault<T>(string sql, params object[] args) 
+		public T FirstOrDefault<T>(string sql, params object[] args)
 		{
 			return Query<T>(sql, args).FirstOrDefault();
 		}
@@ -1035,12 +1035,12 @@ namespace PetaPoco
 		/// Runs a query that should always return a single row.
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>The single record matching the specified primary key value</returns>
 		/// <remarks>
 		/// Throws an exception if there are zero or more than one matching record
 		/// </remarks>
-		public T Single<T>(Sql sql) 
+		public T Single<T>(Sql sql)
 		{
 			return Query<T>(sql).Single();
 		}
@@ -1049,9 +1049,9 @@ namespace PetaPoco
 		/// Runs a query that should always return either a single row, or no rows
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>The single record matching the specified primary key value, or default(T) if no matching rows</returns>
-		public T SingleOrDefault<T>(Sql sql) 
+		public T SingleOrDefault<T>(Sql sql)
 		{
 			return Query<T>(sql).SingleOrDefault();
 		}
@@ -1060,9 +1060,9 @@ namespace PetaPoco
 		/// Runs a query that should always return at least one return
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>The first record in the result set</returns>
-		public T First<T>(Sql sql) 
+		public T First<T>(Sql sql)
 		{
 			return Query<T>(sql).First();
 		}
@@ -1071,9 +1071,9 @@ namespace PetaPoco
 		/// Runs a query and returns the first record, or the default value if no matching records
 		/// </summary>
 		/// <typeparam name="T">The Type representing a row in the result set</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>The first record in the result set, or default(T) if no matching rows</returns>
-		public T FirstOrDefault<T>(Sql sql) 
+		public T FirstOrDefault<T>(Sql sql)
 		{
 			return Query<T>(sql).FirstOrDefault();
 		}
@@ -1082,32 +1082,36 @@ namespace PetaPoco
 		#region operation: Insert
 
 		/// <summary>
-		/// Performs an SQL Insert
+		/// Performs a SQL Insert
 		/// </summary>
 		/// <param name="tableName">The name of the table to insert into</param>
-		/// <param name="primaryKeyName">The name of the primary key column of the table</param>
+		/// <param name="primaryKeyNames">The names of the primary key column of the table</param>
 		/// <param name="poco">The POCO object that specifies the column values to be inserted</param>
 		/// <returns>The auto allocated primary key of the new record</returns>
-		public object Insert(string tableName, string primaryKeyName, object poco)
+		public object Insert(string tableName, IList<string> primaryKeyNames, object poco)
 		{
-			return Insert(tableName, primaryKeyName, true, poco);
+			return Insert(tableName, primaryKeyNames, true, poco);
 		}
 
 
 
 		/// <summary>
-		/// Performs an SQL Insert
+		/// Performs a SQL Insert
 		/// </summary>
 		/// <param name="tableName">The name of the table to insert into</param>
-		/// <param name="primaryKeyName">The name of the primary key column of the table</param>
-		/// <param name="autoIncrement">True if the primary key is automatically allocated by the DB</param>
+		/// <param name="primaryKeyNames">The name of the primary key columns of the table</param>
+		/// <param name="autoIncrement">True if the primary keys are automatically allocated by the DB</param>
 		/// <param name="poco">The POCO object that specifies the column values to be inserted</param>
-		/// <returns>The auto allocated primary key of the new record, or null for non-auto-increment tables</returns>
+		/// <returns>The auto allocated primary keys of the new record, or null for non-auto-increment tables</returns>
 		/// <remarks>Inserts a poco into a table.  If the poco has a property with the same name 
 		/// as the primary key the id of the new record is assigned to it.  Either way,
 		/// the new id is returned.</remarks>
-		public object Insert(string tableName, string primaryKeyName, bool autoIncrement, object poco)
+		public object Insert(string tableName, IList<string> primaryKeyNames, bool autoIncrement, object poco)
 		{
+			if (autoIncrement && primaryKeyNames.Count > 1)
+			{
+				throw new ArgumentException("Multiple primary keys cannot be auto incremented.");
+			}
 			try
 			{
 				OpenSharedConnection();
@@ -1115,7 +1119,7 @@ namespace PetaPoco
 				{
 					using (var cmd = CreateCommand(_sharedConnection, ""))
 					{
-						var pd = PocoData.ForObject(poco, primaryKeyName);
+						var pd = PocoData.ForObject(poco, primaryKeyNames);
 						var names = new List<string>();
 						var values = new List<string>();
 						var index = 0;
@@ -1126,11 +1130,11 @@ namespace PetaPoco
 								continue;
 
 							// Don't insert the primary key (except under oracle where we need bring in the next sequence value)
-							if (autoIncrement && primaryKeyName != null && string.Compare(i.Key, primaryKeyName, true)==0)
+							if (autoIncrement && primaryKeyNames[0] != null && string.Compare(i.Key, primaryKeyNames[0], true) == 0)
 							{
 								// Setup auto increment expression
 								string autoIncExpression = _dbType.GetAutoIncrementExpression(pd.TableInfo);
-								if (autoIncExpression!=null)
+								if (autoIncExpression != null)
 								{
 									names.Add(i.Key);
 									values.Add(autoIncExpression);
@@ -1146,7 +1150,7 @@ namespace PetaPoco
 						string outputClause = String.Empty;
 						if (autoIncrement)
 						{
-							outputClause = _dbType.GetInsertOutputClause(primaryKeyName);
+							outputClause = _dbType.GetInsertOutputClause(primaryKeyNames[0]);
 						}
 
 
@@ -1163,22 +1167,18 @@ namespace PetaPoco
 							cmd.ExecuteNonQuery();
 							OnExecutedCommand(cmd);
 
-							PocoColumn pkColumn;
-							if (primaryKeyName != null && pd.Columns.TryGetValue(primaryKeyName, out pkColumn))
-								return pkColumn.GetValue(poco);
-							else
-								return null;
+							return null;
 						}
 
 
-						object id = _dbType.ExecuteInsert(this, cmd, primaryKeyName);
+						object id = _dbType.ExecuteInsert(this, cmd, primaryKeyNames[0]);
 
 
 						// Assign the ID back to the primary key property
-						if (primaryKeyName != null)
+						if (primaryKeyNames[0] != null)
 						{
 							PocoColumn pc;
-							if (pd.Columns.TryGetValue(primaryKeyName, out pc))
+							if (pd.Columns.TryGetValue(primaryKeyNames[0], out pc))
 							{
 								pc.SetValue(poco, pc.ChangeType(id));
 							}
@@ -1201,7 +1201,7 @@ namespace PetaPoco
 		}
 
 		/// <summary>
-		/// Performs an SQL Insert
+		/// Performs a SQL Insert
 		/// </summary>
 		/// <param name="poco">The POCO object that specifies the column values to be inserted</param>
 		/// <returns>The auto allocated primary key of the new record, or null for non-auto-increment tables</returns>
@@ -1210,7 +1210,7 @@ namespace PetaPoco
 		public object Insert(object poco)
 		{
 			var pd = PocoData.ForType(poco.GetType());
-			return Insert(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, pd.TableInfo.AutoIncrement, poco);
+			return Insert(pd.TableInfo.TableName, pd.TableInfo.PrimaryKeys, pd.TableInfo.AutoIncrement, poco);
 		}
 
 		#endregion
@@ -1218,28 +1218,28 @@ namespace PetaPoco
 		#region operation: Update
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <param name="tableName">The name of the table to update</param>
-		/// <param name="primaryKeyName">The name of the primary key column of the table</param>
+		/// <param name="primaryKeyNames">The names of the primary key column of the table</param>
 		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
-		/// <param name="primaryKeyValue">The primary key of the record to be updated</param>
+		/// <param name="primaryKeyValues">The primary keys of the record to be updated</param>
 		/// <returns>The number of affected records</returns>
-		public int Update(string tableName, string primaryKeyName, object poco, object primaryKeyValue)
+		public int Update(string tableName, IList<string> primaryKeyNames, object poco, params object[] primaryKeyValues)
 		{
-			return Update(tableName, primaryKeyName, poco, primaryKeyValue, null);
+			return Update(tableName, primaryKeyNames, poco, null, primaryKeyValues);
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <param name="tableName">The name of the table to update</param>
-		/// <param name="primaryKeyName">The name of the primary key column of the table</param>
+		/// <param name="primaryKeyNames">The names of the primary key column of the table</param>
 		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
-		/// <param name="primaryKeyValue">The primary key of the record to be updated</param>
 		/// <param name="columns">The column names of the columns to be updated, or null for all</param>
+		/// <param name="primaryKeyValues">The primary keys of the record to be updated</param>
 		/// <returns>The number of affected rows</returns>
-		public int Update(string tableName, string primaryKeyName, object poco, object primaryKeyValue, IEnumerable<string> columns)
+		public int Update(string tableName, IList<string> primaryKeyNames, object poco, IEnumerable<string> columns, params object[] primaryKeyValues)
 		{
 			try
 			{
@@ -1250,16 +1250,17 @@ namespace PetaPoco
 					{
 						var sb = new StringBuilder();
 						var index = 0;
-						var pd = PocoData.ForObject(poco,primaryKeyName);
+						var pd = PocoData.ForObject(poco, primaryKeyNames);
 						if (columns == null)
 						{
 							foreach (var i in pd.Columns)
 							{
 								// Don't update the primary key, but grab the value if we don't have it
-								if (string.Compare(i.Key, primaryKeyName, true) == 0)
+								int ValuesIndex = primaryKeyNames.IndexOf(i.Key, StringComparer.InvariantCultureIgnoreCase);
+								if (ValuesIndex > -1)
 								{
-									if (primaryKeyValue == null)
-										primaryKeyValue = i.Value.GetValue(poco);
+									if (primaryKeyValues[ValuesIndex] == null)
+										primaryKeyValues[ValuesIndex] = i.Value.GetValue(poco);
 									continue;
 								}
 
@@ -1292,29 +1293,38 @@ namespace PetaPoco
 							}
 
 							// Grab primary key value
-							if (primaryKeyValue == null)
+							for (int i = 0; i < primaryKeyValues.Length; i++)
 							{
-								var pc = pd.Columns[primaryKeyName];
-								primaryKeyValue = pc.GetValue(poco);
+								if (primaryKeyValues[i] == null)
+								{
+									var pc = pd.Columns[primaryKeyNames[i]];
+									primaryKeyValues[i] = pc.GetValue(poco);
+								}
+								i++;
 							}
 
 						}
 
 						// Find the property info for the primary key
-						PropertyInfo pkpi=null;
-						if (primaryKeyName != null)
+
+
+
+						cmd.CommandText = string.Format("UPDATE {0} SET {1} WHERE {3}",
+											_dbType.EscapeTableName(tableName), sb.ToString(), BuildPrimaryKeyMatchingSql(primaryKeyNames, index++));
+
+						for (int i = 0; i < primaryKeyNames.Count; i++)
 						{
-							pkpi = pd.Columns[primaryKeyName].PropertyInfo;
+							PropertyInfo pkpi = null;
+							if (primaryKeyNames[i] != null)
+							{
+								pkpi = pd.Columns[primaryKeyNames[i]].PropertyInfo;
+							}
+							AddParam(cmd, primaryKeyValues[i], pkpi);
 						}
-
-						cmd.CommandText = string.Format("UPDATE {0} SET {1} WHERE {2} = {3}{4}",
-											_dbType.EscapeTableName(tableName), sb.ToString(), _dbType.EscapeSqlIdentifier(primaryKeyName), _paramPrefix, index++);
-						AddParam(cmd, primaryKeyValue, pkpi);
-
 						DoPreExecute(cmd);
 
 						// Do it
-						var retv=cmd.ExecuteNonQuery();
+						var retv = cmd.ExecuteNonQuery();
 						OnExecutedCommand(cmd);
 						return retv;
 					}
@@ -1333,32 +1343,32 @@ namespace PetaPoco
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <param name="tableName">The name of the table to update</param>
-		/// <param name="primaryKeyName">The name of the primary key column of the table</param>
+		/// <param name="primaryKeyNames">The names of the primary key columns of the table</param>
 		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
 		/// <returns>The number of affected rows</returns>
-		public int Update(string tableName, string primaryKeyName, object poco)
+		public int Update(string tableName, IList<string> primaryKeyNames, object poco)
 		{
-			return Update(tableName, primaryKeyName, poco, null);
+			return Update(tableName, primaryKeyNames, null, poco);
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <param name="tableName">The name of the table to update</param>
-		/// <param name="primaryKeyName">The name of the primary key column of the table</param>
-		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
+		/// <param name="primaryKeyNames">The names of the primary key columns of the table</param>
 		/// <param name="columns">The column names of the columns to be updated, or null for all</param>
+		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
 		/// <returns>The number of affected rows</returns>
-		public int Update(string tableName, string primaryKeyName, object poco, IEnumerable<string> columns)
+		public int Update(string tableName, IList<string> primaryKeyNames, IEnumerable<string> columns, object poco)
 		{
-			return Update(tableName, primaryKeyName, poco, null, columns);
+			return Update(tableName, primaryKeyNames, poco, null, columns);
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
 		/// <param name="columns">The column names of the columns to be updated, or null for all</param>
@@ -1369,7 +1379,7 @@ namespace PetaPoco
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
 		/// <returns>The number of affected rows</returns>
@@ -1379,31 +1389,31 @@ namespace PetaPoco
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
-		/// <param name="primaryKeyValue">The primary key of the record to be updated</param>
+		/// <param name="primaryKeyValues">The primary keys of the record to be updated</param>
 		/// <returns>The number of affected rows</returns>
-		public int Update(object poco, object primaryKeyValue)
+		public int Update(object poco, params object[] primaryKeyValues)
 		{
-			return Update(poco, primaryKeyValue, null);
+			return Update(poco, primaryKeyValues, null);
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <param name="poco">The POCO object that specifies the column values to be updated</param>
-		/// <param name="primaryKeyValue">The primary key of the record to be updated</param>
+		/// <param name="primaryKeyValues">The primary keys of the record to be updated</param>
 		/// <param name="columns">The column names of the columns to be updated, or null for all</param>
 		/// <returns>The number of affected rows</returns>
-		public int Update(object poco, object primaryKeyValue, IEnumerable<string> columns)
+		public int Update(object poco, IEnumerable<string> columns, params object[] primaryKeyValues)
 		{
 			var pd = PocoData.ForType(poco.GetType());
-			return Update(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco, primaryKeyValue, columns);
+			return Update(pd.TableInfo.TableName, pd.TableInfo.PrimaryKeys, poco, columns, primaryKeyValues);
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <typeparam name="T">The POCO class who's attributes specify the name of the table to update</typeparam>
 		/// <param name="sql">The SQL update and condition clause (ie: everything after "UPDATE tablename"</param>
@@ -1416,10 +1426,10 @@ namespace PetaPoco
 		}
 
 		/// <summary>
-		/// Performs an SQL update
+		/// Performs a SQL update
 		/// </summary>
 		/// <typeparam name="T">The POCO class who's attributes specify the name of the table to update</typeparam>
-		/// <param name="sql">An SQL builder object representing the SQL update and condition clause (ie: everything after "UPDATE tablename"</param>
+		/// <param name="sql">a SQL builder object representing the SQL update and condition clause (ie: everything after "UPDATE tablename"</param>
 		/// <returns>The number of affected rows</returns>
 		public int Update<T>(Sql sql)
 		{
@@ -1434,53 +1444,58 @@ namespace PetaPoco
 		/// Performs and SQL Delete
 		/// </summary>
 		/// <param name="tableName">The name of the table to delete from</param>
-		/// <param name="primaryKeyName">The name of the primary key column</param>
+		/// <param name="primaryKeyNames">The names of the primary key columns</param>
 		/// <param name="poco">The POCO object whose primary key value will be used to delete the row</param>
 		/// <returns>The number of rows affected</returns>
-		public int Delete(string tableName, string primaryKeyName, object poco)
+		public int Delete(string tableName, IList<string> primaryKeyNames, object poco)
 		{
-			return Delete(tableName, primaryKeyName, poco, null);
+			return Delete(tableName, primaryKeyNames, poco, null);
 		}
 
 		/// <summary>
-		/// Performs and SQL Delete
+		/// Performs a SQL Delete
 		/// </summary>
 		/// <param name="tableName">The name of the table to delete from</param>
-		/// <param name="primaryKeyName">The name of the primary key column</param>
+		/// <param name="primaryKeyNames">The name of the primary key columns</param>
 		/// <param name="poco">The POCO object whose primary key value will be used to delete the row (or null to use the supplied primary key value)</param>
-		/// <param name="primaryKeyValue">The value of the primary key identifing the record to be deleted (or null, or get this value from the POCO instance)</param>
+		/// <param name="primaryKeyValues">The values of the primary keys identifing the record to be deleted (or null, or get this value from the POCO instance)</param>
 		/// <returns>The number of rows affected</returns>
-		public int Delete(string tableName, string primaryKeyName, object poco, object primaryKeyValue)
+		public int Delete(string tableName, IList<string> primaryKeyNames, object poco, params object[] primaryKeyValues)
 		{
 			// If primary key value not specified, pick it up from the object
-			if (primaryKeyValue == null)
+			if (primaryKeyValues == null)
 			{
-				var pd = PocoData.ForObject(poco,primaryKeyName);
+				List<object> listOfPrimaryKeyValues = new List<object>();
+				var pd = PocoData.ForObject(poco, primaryKeyNames);
 				PocoColumn pc;
-				if (pd.Columns.TryGetValue(primaryKeyName, out pc))
+				foreach (string primaryKeyName in primaryKeyNames)
 				{
-					primaryKeyValue = pc.GetValue(poco);
+					if (pd.Columns.TryGetValue(primaryKeyName, out pc))
+					{
+						listOfPrimaryKeyValues.Add(pc.GetValue(poco));
+					}
 				}
+				primaryKeyValues = listOfPrimaryKeyValues.ToArray();
 			}
 
 			// Do it
-			var sql = string.Format("DELETE FROM {0} WHERE {1}=@0", _dbType.EscapeTableName(tableName), _dbType.EscapeSqlIdentifier(primaryKeyName));
-			return Execute(sql, primaryKeyValue);
+			var sql = string.Format("DELETE FROM {0} WHERE " + BuildPrimaryKeyMatchingSql(primaryKeyNames), _dbType.EscapeTableName(tableName));
+			return Execute(sql, primaryKeyValues);
 		}
 
 		/// <summary>
-		/// Performs an SQL Delete
+		/// Performs a SQL Delete
 		/// </summary>
 		/// <param name="poco">The POCO object specifying the table name and primary key value of the row to be deleted</param>
 		/// <returns>The number of rows affected</returns>
 		public int Delete(object poco)
 		{
 			var pd = PocoData.ForType(poco.GetType());
-			return Delete(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
+			return Delete(pd.TableInfo.TableName, pd.TableInfo.PrimaryKeys, poco);
 		}
 
 		/// <summary>
-		/// Performs an SQL Delete
+		/// Performs a SQL Delete
 		/// </summary>
 		/// <typeparam name="T">The POCO class whose attributes identify the table and primary key to be used in the delete</typeparam>
 		/// <param name="pocoOrPrimaryKey">The value of the primary key of the row to delete</param>
@@ -1490,11 +1505,11 @@ namespace PetaPoco
 			if (pocoOrPrimaryKey.GetType() == typeof(T))
 				return Delete(pocoOrPrimaryKey);
 			var pd = PocoData.ForType(typeof(T));
-			return Delete(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, null, pocoOrPrimaryKey);
+			return Delete(pd.TableInfo.TableName, pd.TableInfo.PrimaryKeys, null, pocoOrPrimaryKey);
 		}
 
 		/// <summary>
-		/// Performs an SQL Delete
+		/// Performs a SQL Delete
 		/// </summary>
 		/// <typeparam name="T">The POCO class who's attributes specify the name of the table to delete from</typeparam>
 		/// <param name="sql">The SQL condition clause identifying the row to delete (ie: everything after "DELETE FROM tablename"</param>
@@ -1507,10 +1522,10 @@ namespace PetaPoco
 		}
 
 		/// <summary>
-		/// Performs an SQL Delete
+		/// Performs a SQL Delete
 		/// </summary>
 		/// <typeparam name="T">The POCO class who's attributes specify the name of the table to delete from</typeparam>
-		/// <param name="sql">An SQL builder object representing the SQL condition clause identifying the row to delete (ie: everything after "UPDATE tablename"</param>
+		/// <param name="sql">a SQL builder object representing the SQL condition clause identifying the row to delete (ie: everything after "UPDATE tablename"</param>
 		/// <returns>The number of affected rows</returns>
 		public int Delete<T>(Sql sql)
 		{
@@ -1524,59 +1539,70 @@ namespace PetaPoco
 		/// <summary>
 		/// Check if a poco represents a new row
 		/// </summary>
-		/// <param name="primaryKeyName">The name of the primary key column</param>
+		/// <param name="primaryKeyNames">The names of the primary key columns</param>
 		/// <param name="poco">The object instance whose "newness" is to be tested</param>
 		/// <returns>True if the POCO represents a record already in the database</returns>
 		/// <remarks>This method simply tests if the POCO's primary key column property has been set to something non-zero.</remarks>
-		public bool IsNew(string primaryKeyName, object poco)
+		public bool IsNew(IList<string> primaryKeyNames, object poco)
 		{
-			var pd = PocoData.ForObject(poco, primaryKeyName);
-			object pk;
+			var pd = PocoData.ForObject(poco, primaryKeyNames);
+			List<object> pks = new List<object>();
 			PocoColumn pc;
-			if (pd.Columns.TryGetValue(primaryKeyName, out pc))
+			foreach (string PrimaryKeyName in primaryKeyNames)
 			{
-				pk = pc.GetValue(poco);
-			}
+				if (pd.Columns.TryGetValue(PrimaryKeyName, out pc))
+				{
+					pks.Add(pc.GetValue(poco));
+				}
 #if !PETAPOCO_NO_DYNAMIC
-			else if (poco.GetType() == typeof(System.Dynamic.ExpandoObject))
-			{
-				return true;
-			}
+				else if (poco.GetType() == typeof(System.Dynamic.ExpandoObject))
+				{
+					return true;
+				}
+
 #endif
-			else
-			{
-				var pi = poco.GetType().GetProperty(primaryKeyName);
-				if (pi == null)
-					throw new ArgumentException(string.Format("The object doesn't have a property matching the primary key column name '{0}'", primaryKeyName));
-				pk = pi.GetValue(poco, null);
+				else
+				{
+					var pi = poco.GetType().GetProperty(PrimaryKeyName);
+					if (pi == null)
+						throw new ArgumentException(string.Format("The object doesn't have a property matching the primary key column name '{0}'", PrimaryKeyName));
+					pks.Add(pi.GetValue(poco, null));
+				}
 			}
 
-			if (pk == null)
+
+			if (pks.Count == 0)
 				return true;
 
-			var type = pk.GetType();
+			bool isNew = true;
 
-			if (type.IsValueType)
+			foreach (object pk in pks)
 			{
-				// Common primary key types
-				if (type == typeof(long))
-					return (long)pk == default(long);
-				else if (type == typeof(ulong))
-					return (ulong)pk == default(ulong);
-				else if (type == typeof(int))
-					return (int)pk == default(int);
-				else if (type == typeof(uint))
-					return (uint)pk == default(uint);
-				else if (type == typeof(Guid))
-					return (Guid)pk == default(Guid);
+				var type = pk.GetType();
 
-				// Create a default instance and compare
-				return pk == Activator.CreateInstance(pk.GetType());
+				if (type.IsValueType)
+				{
+					// Common primary key types
+					if (type == typeof(long))
+						return (long)pk == default(long);
+					else if (type == typeof(ulong))
+						return (ulong)pk == default(ulong);
+					else if (type == typeof(int))
+						return (int)pk == default(int);
+					else if (type == typeof(uint))
+						return (uint)pk == default(uint);
+					else if (type == typeof(Guid))
+						return (Guid)pk == default(Guid);
+
+					// Create a default instance and compare
+					isNew = isNew && pk == Activator.CreateInstance(pk.GetType());
+				}
+				else
+				{
+					isNew = isNew && pk == null;
+				}
 			}
-			else
-			{
-				return pk == null;
-			}
+			return isNew;
 		}
 
 		/// <summary>
@@ -1590,37 +1616,37 @@ namespace PetaPoco
 			var pd = PocoData.ForType(poco.GetType());
 			if (!pd.TableInfo.AutoIncrement)
 				throw new InvalidOperationException("IsNew() and Save() are only supported on tables with auto-increment/identity primary key columns");
-			return IsNew(pd.TableInfo.PrimaryKey, poco);
+			return IsNew(pd.TableInfo.PrimaryKeys, poco);
 		}
 		#endregion
 
 		#region operation: Save
 		/// <summary>
-		/// Saves a POCO by either performing either an SQL Insert or SQL Update
+		/// Saves a POCO by either performing either a SQL Insert or SQL Update
 		/// </summary>
 		/// <param name="tableName">The name of the table to be updated</param>
-		/// <param name="primaryKeyName">The name of the primary key column</param>
+		/// <param name="primaryKeyNames">The names of the primary key columns</param>
 		/// <param name="poco">The POCO object to be saved</param>
-		public void Save(string tableName, string primaryKeyName, object poco)
+		public void Save(string tableName, IList<string> primaryKeyNames, object poco)
 		{
-			if (IsNew(primaryKeyName, poco))
+			if (IsNew(primaryKeyNames, poco))
 			{
-				Insert(tableName, primaryKeyName, true, poco);
+				Insert(tableName, primaryKeyNames, true, poco);
 			}
 			else
 			{
-				Update(tableName, primaryKeyName, poco);
+				Update(tableName, primaryKeyNames, poco);
 			}
 		}
 
 		/// <summary>
-		/// Saves a POCO by either performing either an SQL Insert or SQL Update
+		/// Saves a POCO by either performing either a SQL Insert or SQL Update
 		/// </summary>
 		/// <param name="poco">The POCO object to be saved</param>
 		public void Save(object poco)
 		{
 			var pd = PocoData.ForType(poco.GetType());
-			Save(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
+			Save(pd.TableInfo.TableName, pd.TableInfo.PrimaryKeys, poco);
 		}
 		#endregion
 
@@ -1710,7 +1736,7 @@ namespace PetaPoco
 		/// <typeparam name="T2">The second POCO type</typeparam>
 		/// <typeparam name="TRet">The returned list POCO type</typeparam>
 		/// <param name="cb">A callback function to connect the POCO instances, or null to automatically guess the relationships</param>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as a List</returns>
 		public List<TRet> Fetch<T1, T2, TRet>(Func<T1, T2, TRet> cb, Sql sql) { return Query<T1, T2, TRet>(cb, sql.SQL, sql.Arguments).ToList(); }
 
@@ -1722,7 +1748,7 @@ namespace PetaPoco
 		/// <typeparam name="T3">The third POCO type</typeparam>
 		/// <typeparam name="TRet">The returned list POCO type</typeparam>
 		/// <param name="cb">A callback function to connect the POCO instances, or null to automatically guess the relationships</param>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as a List</returns>
 		public List<TRet> Fetch<T1, T2, T3, TRet>(Func<T1, T2, T3, TRet> cb, Sql sql) { return Query<T1, T2, T3, TRet>(cb, sql.SQL, sql.Arguments).ToList(); }
 
@@ -1735,7 +1761,7 @@ namespace PetaPoco
 		/// <typeparam name="T4">The fourth POCO type</typeparam>
 		/// <typeparam name="TRet">The returned list POCO type</typeparam>
 		/// <param name="cb">A callback function to connect the POCO instances, or null to automatically guess the relationships</param>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as a List</returns>
 		public List<TRet> Fetch<T1, T2, T3, T4, TRet>(Func<T1, T2, T3, T4, TRet> cb, Sql sql) { return Query<T1, T2, T3, T4, TRet>(cb, sql.SQL, sql.Arguments).ToList(); }
 
@@ -1746,7 +1772,7 @@ namespace PetaPoco
 		/// <typeparam name="T2">The second POCO type</typeparam>
 		/// <typeparam name="TRet">The type of objects in the returned IEnumerable</typeparam>
 		/// <param name="cb">A callback function to connect the POCO instances, or null to automatically guess the relationships</param>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as an IEnumerable</returns>
 		public IEnumerable<TRet> Query<T1, T2, TRet>(Func<T1, T2, TRet> cb, Sql sql) { return Query<TRet>(new Type[] { typeof(T1), typeof(T2) }, cb, sql.SQL, sql.Arguments); }
 
@@ -1758,7 +1784,7 @@ namespace PetaPoco
 		/// <typeparam name="T3">The third POCO type</typeparam>
 		/// <typeparam name="TRet">The type of objects in the returned IEnumerable</typeparam>
 		/// <param name="cb">A callback function to connect the POCO instances, or null to automatically guess the relationships</param>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as an IEnumerable</returns>
 		public IEnumerable<TRet> Query<T1, T2, T3, TRet>(Func<T1, T2, T3, TRet> cb, Sql sql) { return Query<TRet>(new Type[] { typeof(T1), typeof(T2), typeof(T3) }, cb, sql.SQL, sql.Arguments); }
 
@@ -1771,7 +1797,7 @@ namespace PetaPoco
 		/// <typeparam name="T4">The fourth POCO type</typeparam>
 		/// <typeparam name="TRet">The type of objects in the returned IEnumerable</typeparam>
 		/// <param name="cb">A callback function to connect the POCO instances, or null to automatically guess the relationships</param>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as an IEnumerable</returns>
 		public IEnumerable<TRet> Query<T1, T2, T3, T4, TRet>(Func<T1, T2, T3, T4, TRet> cb, Sql sql) { return Query<TRet>(new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) }, cb, sql.SQL, sql.Arguments); }
 
@@ -1846,7 +1872,7 @@ namespace PetaPoco
 		/// </summary>
 		/// <typeparam name="T1">The first POCO type</typeparam>
 		/// <typeparam name="T2">The second POCO type</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as a List</returns>
 		public List<T1> Fetch<T1, T2>(Sql sql) { return Query<T1, T2>(sql.SQL, sql.Arguments).ToList(); }
 
@@ -1856,7 +1882,7 @@ namespace PetaPoco
 		/// <typeparam name="T1">The first POCO type</typeparam>
 		/// <typeparam name="T2">The second POCO type</typeparam>
 		/// <typeparam name="T3">The third POCO type</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as a List</returns>
 		public List<T1> Fetch<T1, T2, T3>(Sql sql) { return Query<T1, T2, T3>(sql.SQL, sql.Arguments).ToList(); }
 
@@ -1867,7 +1893,7 @@ namespace PetaPoco
 		/// <typeparam name="T2">The second POCO type</typeparam>
 		/// <typeparam name="T3">The third POCO type</typeparam>
 		/// <typeparam name="T4">The fourth POCO type</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as a List</returns>
 		public List<T1> Fetch<T1, T2, T3, T4>(Sql sql) { return Query<T1, T2, T3, T4>(sql.SQL, sql.Arguments).ToList(); }
 
@@ -1876,7 +1902,7 @@ namespace PetaPoco
 		/// </summary>
 		/// <typeparam name="T1">The first POCO type</typeparam>
 		/// <typeparam name="T2">The second POCO type</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as an IEnumerable</returns>
 		public IEnumerable<T1> Query<T1, T2>(Sql sql) { return Query<T1>(new Type[] { typeof(T1), typeof(T2) }, null, sql.SQL, sql.Arguments); }
 
@@ -1886,7 +1912,7 @@ namespace PetaPoco
 		/// <typeparam name="T1">The first POCO type</typeparam>
 		/// <typeparam name="T2">The second POCO type</typeparam>
 		/// <typeparam name="T3">The third POCO type</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as an IEnumerable</returns>
 		public IEnumerable<T1> Query<T1, T2, T3>(Sql sql) { return Query<T1>(new Type[] { typeof(T1), typeof(T2), typeof(T3) }, null, sql.SQL, sql.Arguments); }
 
@@ -1897,7 +1923,7 @@ namespace PetaPoco
 		/// <typeparam name="T2">The second POCO type</typeparam>
 		/// <typeparam name="T3">The third POCO type</typeparam>
 		/// <typeparam name="T4">The fourth POCO type</typeparam>
-		/// <param name="sql">An SQL builder object representing the query and it's arguments</param>
+		/// <param name="sql">a SQL builder object representing the query and it's arguments</param>
 		/// <returns>A collection of POCO's as an IEnumerable</returns>
 		public IEnumerable<T1> Query<T1, T2, T3, T4>(Sql sql) { return Query<T1>(new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) }, null, sql.SQL, sql.Arguments); }
 
@@ -2010,7 +2036,7 @@ namespace PetaPoco
 		}
 
 		/// <summary>
-		/// Formats an SQL query and it's arguments for display
+		/// Formats a SQL query and it's arguments for display
 		/// </summary>
 		/// <param name="sql"></param>
 		/// <param name="args"></param>
@@ -2046,37 +2072,37 @@ namespace PetaPoco
 		/// <summary>
 		/// When set to true, PetaPoco will automatically create the "SELECT columns" part of any query that looks like it needs it
 		/// </summary>
-		public bool EnableAutoSelect 
-		{ 
-			get; 
-			set; 
+		public bool EnableAutoSelect
+		{
+			get;
+			set;
 		}
 
 		/// <summary>
 		/// When set to true, parameters can be named ?myparam and populated from properties of the passed in argument values.
 		/// </summary>
-		public bool EnableNamedParams 
-		{ 
-			get; 
-			set; 
+		public bool EnableNamedParams
+		{
+			get;
+			set;
 		}
 
 		/// <summary>
 		/// Sets the timeout value for all SQL statements.
 		/// </summary>
-		public int CommandTimeout 
-		{ 
-			get; 
-			set; 
+		public int CommandTimeout
+		{
+			get;
+			set;
 		}
 
 		/// <summary>
 		/// Sets the timeout value for the next (and only next) SQL statement
 		/// </summary>
-		public int OneTimeCommandTimeout 
-		{ 
-			get; 
-			set; 
+		public int OneTimeCommandTimeout
+		{
+			get;
+			set;
 		}
 		#endregion
 
@@ -2097,6 +2123,38 @@ namespace PetaPoco
 		#endregion
 
 		#region Internal operations
+
+		private string BuildPrimaryKeyMatchingSql<T>()
+		{
+			return BuildPrimaryKeyMatchingSql(PocoData.ForType(typeof(T)).TableInfo.PrimaryKeys, 0);
+		}
+
+		private string BuildPrimaryKeyMatchingSql<T>(int startIndex)
+		{
+			return BuildPrimaryKeyMatchingSql(PocoData.ForType(typeof(T)).TableInfo.PrimaryKeys, startIndex);
+		}
+
+		private string BuildPrimaryKeyMatchingSql(IList<string> PrimaryKeyNames)
+		{
+			return BuildPrimaryKeyMatchingSql(PrimaryKeyNames, 0);
+		}
+
+		private string BuildPrimaryKeyMatchingSql(IList<string> PrimaryKeyNames, int startIndex)
+		{
+			StringBuilder sqlExpression = new StringBuilder();
+			int i = startIndex;
+			foreach (string PrimaryKeyName in PrimaryKeyNames)
+			{
+				if (sqlExpression.Length > 0)
+				{
+					sqlExpression.Append(" AND ");
+				}
+				sqlExpression.Append(string.Format("{0}=@{1}", _dbType.EscapeSqlIdentifier(PrimaryKeyName), i));
+				i++;
+			}
+			return sqlExpression.ToString();
+		}
+
 		internal void ExecuteNonQueryHelper(IDbCommand cmd)
 		{
 			DoPreExecute(cmd);
@@ -2136,6 +2194,20 @@ namespace PetaPoco
 		#endregion
 	}
 
+	internal static class ExtensionMethods
+	{
+		public static int IndexOf<T>(this IList<T> source, T toFind, IEqualityComparer<T> comparer)
+		{
+			for (int i = 0; i < source.Count; i++)
+			{
+				if (comparer.Equals(source[i], toFind))
+				{
+					return i;
+				}
+			}
+			return -1;
+		}
+	}
 
 	/* 
 	Thanks to Adam Schroder (@schotime) for this.
@@ -2309,26 +2381,32 @@ namespace PetaPoco
 	{
 		public PrimaryKeyAttribute(string primaryKey)
 		{
-			Value = primaryKey;
+			Value = new List<string>() { primaryKey };
 			autoIncrement = true;
 		}
 
-		public string Value 
-		{ 
-			get; 
-			private set; 
+		public PrimaryKeyAttribute(IList<string> primaryKeys)
+		{
+			Value = primaryKeys;
+			autoIncrement = true;
 		}
 
-		public string sequenceName 
-		{ 
-			get; 
-			set; 
+		public IList<string> Value
+		{
+			get;
+			private set;
 		}
 
-		public bool autoIncrement 
-		{ 
-			get; 
-			set; 
+		public string sequenceName
+		{
+			get;
+			set;
+		}
+
+		public bool autoIncrement
+		{
+			get;
+			set;
 		}
 	}
 
@@ -2997,37 +3075,37 @@ namespace PetaPoco
 		/// <summary>
 		/// The database table name
 		/// </summary>
-		public string TableName 
-		{ 
-			get; 
-			set; 
+		public string TableName
+		{
+			get;
+			set;
 		}
 
 		/// <summary>
 		/// The name of the primary key column of the table
 		/// </summary>
-		public string PrimaryKey 
-		{ 
-			get; 
-			set; 
+		public IList<string> PrimaryKeys
+		{
+			get;
+			set;
 		}
 
 		/// <summary>
 		/// True if the primary key column is an auto-incrementing
 		/// </summary>
-		public bool AutoIncrement 
-		{ 
-			get; 
-			set; 
+		public bool AutoIncrement
+		{
+			get;
+			set;
 		}
 
 		/// <summary>
 		/// The name of the sequence used for auto-incrementing Oracle primary key fields
 		/// </summary>
-		public string SequenceName 
-		{ 
-			get; 
-			set; 
+		public string SequenceName
+		{
+			get;
+			set;
 		}
 
 
@@ -3046,7 +3124,7 @@ namespace PetaPoco
 
 			// Get the primary key
 			a = t.GetCustomAttributes(typeof(PrimaryKeyAttribute), true);
-			ti.PrimaryKey = a.Length == 0 ? "ID" : (a[0] as PrimaryKeyAttribute).Value;
+			ti.PrimaryKeys = a.Length == 0 ? new List<string>() { ti.TableName + "Id" } : (a[0] as PrimaryKeyAttribute).Value;
 			ti.SequenceName = a.Length == 0 ? null : (a[0] as PrimaryKeyAttribute).sequenceName;
 			ti.AutoIncrement = a.Length == 0 ? false : (a[0] as PrimaryKeyAttribute).autoIncrement;
 
@@ -3415,7 +3493,7 @@ namespace PetaPoco
 
 		class PocoData
 		{
-			public static PocoData ForObject(object o, string primaryKeyName)
+			public static PocoData ForObject(object o, IList<string> primaryKeyNames)
 			{
 				var t = o.GetType();
 #if !PETAPOCO_NO_DYNAMIC
@@ -3423,13 +3501,16 @@ namespace PetaPoco
 				{
 					var pd = new PocoData();
 					pd.TableInfo = new TableInfo();
-					pd.Columns = new Dictionary<string, PocoColumn>(StringComparer.OrdinalIgnoreCase);
-					pd.Columns.Add(primaryKeyName, new ExpandoColumn() { ColumnName = primaryKeyName });
-					pd.TableInfo.PrimaryKey = primaryKeyName;
+					pd.Columns = new Dictionary<string, PocoColumn>(StringComparer.InvariantCultureIgnoreCase);
+					foreach (string primaryKeyName in primaryKeyNames)
+					{
+						pd.Columns.Add(primaryKeyName, new ExpandoColumn() { ColumnName = primaryKeyName });
+					}
+					pd.TableInfo.PrimaryKeys = primaryKeyNames;
 					pd.TableInfo.AutoIncrement = true;
 					foreach (var col in (o as IDictionary<string, object>).Keys)
 					{
-						if (col != primaryKeyName)
+						if (!primaryKeyNames.Contains(col, StringComparer.InvariantCultureIgnoreCase))
 							pd.Columns.Add(col, new ExpandoColumn() { ColumnName = col });
 					}
 					return pd;
@@ -3464,7 +3545,7 @@ namespace PetaPoco
 				TableInfo = mapper.GetTableInfo(t);
 
 				// Work out bound properties
-				Columns = new Dictionary<string, PocoColumn>(StringComparer.OrdinalIgnoreCase);
+				Columns = new Dictionary<string, PocoColumn>(StringComparer.InvariantCultureIgnoreCase);
 				foreach (var pi in t.GetProperties())
 				{
 					ColumnInfo ci = mapper.GetColumnInfo(pi);
@@ -3500,190 +3581,190 @@ namespace PetaPoco
 
 				return PocoFactories.Get(key, () =>
 					{
-					// Create the method
-					var m = new DynamicMethod("petapoco_factory_" + PocoFactories.Count.ToString(), type, new Type[] { typeof(IDataReader) }, true);
-					var il = m.GetILGenerator();
-					var mapper = Mappers.GetMapper(type);
+						// Create the method
+						var m = new DynamicMethod("petapoco_factory_" + PocoFactories.Count.ToString(), type, new Type[] { typeof(IDataReader) }, true);
+						var il = m.GetILGenerator();
+						var mapper = Mappers.GetMapper(type);
 
 #if !PETAPOCO_NO_DYNAMIC
-					if (type == typeof(object))
-					{
-						// var poco=new T()
-						il.Emit(OpCodes.Newobj, typeof(System.Dynamic.ExpandoObject).GetConstructor(Type.EmptyTypes));			// obj
-
-						MethodInfo fnAdd = typeof(IDictionary<string, object>).GetMethod("Add");
-
-						// Enumerate all fields generating a set assignment for the column
-						for (int i = firstColumn; i < firstColumn + countColumns; i++)
-						{
-							var srcType = r.GetFieldType(i);
-
-							il.Emit(OpCodes.Dup);						// obj, obj
-							il.Emit(OpCodes.Ldstr, r.GetName(i));		// obj, obj, fieldname
-
-							// Get the converter
-							Func<object, object> converter = mapper.GetFromDbConverter((PropertyInfo)null, srcType);
-
-							/*
-							if (ForceDateTimesToUtc && converter == null && srcType == typeof(DateTime))
-								converter = delegate(object src) { return new DateTime(((DateTime)src).Ticks, DateTimeKind.Utc); };
-							*/
-
-							// Setup stack for call to converter
-							AddConverterToStack(il, converter);
-
-							// r[i]
-							il.Emit(OpCodes.Ldarg_0);					// obj, obj, fieldname, converter?,    rdr
-							il.Emit(OpCodes.Ldc_I4, i);					// obj, obj, fieldname, converter?,  rdr,i
-							il.Emit(OpCodes.Callvirt, fnGetValue);		// obj, obj, fieldname, converter?,  value
-
-							// Convert DBNull to null
-							il.Emit(OpCodes.Dup);						// obj, obj, fieldname, converter?,  value, value
-							il.Emit(OpCodes.Isinst, typeof(DBNull));	// obj, obj, fieldname, converter?,  value, (value or null)
-							var lblNotNull = il.DefineLabel();
-							il.Emit(OpCodes.Brfalse_S, lblNotNull);		// obj, obj, fieldname, converter?,  value
-							il.Emit(OpCodes.Pop);						// obj, obj, fieldname, converter?
-							if (converter != null)
-								il.Emit(OpCodes.Pop);					// obj, obj, fieldname, 
-							il.Emit(OpCodes.Ldnull);					// obj, obj, fieldname, null
-							if (converter != null)
-							{
-								var lblReady = il.DefineLabel();
-								il.Emit(OpCodes.Br_S, lblReady);
-								il.MarkLabel(lblNotNull);
-								il.Emit(OpCodes.Callvirt, fnInvoke);
-								il.MarkLabel(lblReady);
-							}
-							else
-							{
-								il.MarkLabel(lblNotNull);
-							}
-
-							il.Emit(OpCodes.Callvirt, fnAdd);
-						}
-					}
-					else
-#endif
-						if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
-						{
-							// Do we need to install a converter?
-							var srcType = r.GetFieldType(0);
-							var converter = GetConverter(mapper, null, srcType, type);
-
-							// "if (!rdr.IsDBNull(i))"
-							il.Emit(OpCodes.Ldarg_0);										// rdr
-							il.Emit(OpCodes.Ldc_I4_0);										// rdr,0
-							il.Emit(OpCodes.Callvirt, fnIsDBNull);							// bool
-							var lblCont = il.DefineLabel();
-							il.Emit(OpCodes.Brfalse_S, lblCont);
-							il.Emit(OpCodes.Ldnull);										// null
-							var lblFin = il.DefineLabel();
-							il.Emit(OpCodes.Br_S, lblFin);
-
-							il.MarkLabel(lblCont);
-
-							// Setup stack for call to converter
-							AddConverterToStack(il, converter);
-
-							il.Emit(OpCodes.Ldarg_0);										// rdr
-							il.Emit(OpCodes.Ldc_I4_0);										// rdr,0
-							il.Emit(OpCodes.Callvirt, fnGetValue);							// value
-
-							// Call the converter
-							if (converter != null)
-								il.Emit(OpCodes.Callvirt, fnInvoke);
-
-							il.MarkLabel(lblFin);
-							il.Emit(OpCodes.Unbox_Any, type);								// value converted
-						}
-						else
+						if (type == typeof(object))
 						{
 							// var poco=new T()
-							il.Emit(OpCodes.Newobj, type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null));
+							il.Emit(OpCodes.Newobj, typeof(System.Dynamic.ExpandoObject).GetConstructor(Type.EmptyTypes));			// obj
+
+							MethodInfo fnAdd = typeof(IDictionary<string, object>).GetMethod("Add");
 
 							// Enumerate all fields generating a set assignment for the column
 							for (int i = firstColumn; i < firstColumn + countColumns; i++)
 							{
-								// Get the PocoColumn for this db column, ignore if not known
-								PocoColumn pc;
-								if (!Columns.TryGetValue(r.GetName(i), out pc))
-									continue;
-
-								// Get the source type for this column
 								var srcType = r.GetFieldType(i);
-								var dstType = pc.PropertyInfo.PropertyType;
 
-								// "if (!rdr.IsDBNull(i))"
-								il.Emit(OpCodes.Ldarg_0);										// poco,rdr
-								il.Emit(OpCodes.Ldc_I4, i);										// poco,rdr,i
-								il.Emit(OpCodes.Callvirt, fnIsDBNull);							// poco,bool
-								var lblNext = il.DefineLabel();
-								il.Emit(OpCodes.Brtrue_S, lblNext);								// poco
+								il.Emit(OpCodes.Dup);						// obj, obj
+								il.Emit(OpCodes.Ldstr, r.GetName(i));		// obj, obj, fieldname
 
-								il.Emit(OpCodes.Dup);											// poco,poco
+								// Get the converter
+								Func<object, object> converter = mapper.GetFromDbConverter((PropertyInfo)null, srcType);
 
-								// Do we need to install a converter?
-								var converter = GetConverter(mapper, pc, srcType, dstType);
+								/*
+								if (ForceDateTimesToUtc && converter == null && srcType == typeof(DateTime))
+									converter = delegate(object src) { return new DateTime(((DateTime)src).Ticks, DateTimeKind.Utc); };
+								*/
 
-								// Fast
-								bool Handled = false;
-								if (converter == null)
+								// Setup stack for call to converter
+								AddConverterToStack(il, converter);
+
+								// r[i]
+								il.Emit(OpCodes.Ldarg_0);					// obj, obj, fieldname, converter?,    rdr
+								il.Emit(OpCodes.Ldc_I4, i);					// obj, obj, fieldname, converter?,  rdr,i
+								il.Emit(OpCodes.Callvirt, fnGetValue);		// obj, obj, fieldname, converter?,  value
+
+								// Convert DBNull to null
+								il.Emit(OpCodes.Dup);						// obj, obj, fieldname, converter?,  value, value
+								il.Emit(OpCodes.Isinst, typeof(DBNull));	// obj, obj, fieldname, converter?,  value, (value or null)
+								var lblNotNull = il.DefineLabel();
+								il.Emit(OpCodes.Brfalse_S, lblNotNull);		// obj, obj, fieldname, converter?,  value
+								il.Emit(OpCodes.Pop);						// obj, obj, fieldname, converter?
+								if (converter != null)
+									il.Emit(OpCodes.Pop);					// obj, obj, fieldname, 
+								il.Emit(OpCodes.Ldnull);					// obj, obj, fieldname, null
+								if (converter != null)
 								{
-									var valuegetter = typeof(IDataRecord).GetMethod("Get" + srcType.Name, new Type[] { typeof(int) });
-									if (valuegetter != null
-											&& valuegetter.ReturnType == srcType
-											&& (valuegetter.ReturnType == dstType || valuegetter.ReturnType == Nullable.GetUnderlyingType(dstType)))
-									{
-										il.Emit(OpCodes.Ldarg_0);										// *,rdr
-										il.Emit(OpCodes.Ldc_I4, i);										// *,rdr,i
-										il.Emit(OpCodes.Callvirt, valuegetter);							// *,value
-
-										// Convert to Nullable
-										if (Nullable.GetUnderlyingType(dstType) != null)
-										{
-											il.Emit(OpCodes.Newobj, dstType.GetConstructor(new Type[] { Nullable.GetUnderlyingType(dstType) }));
-										}
-
-										il.Emit(OpCodes.Callvirt, pc.PropertyInfo.GetSetMethod(true));		// poco
-										Handled = true;
-									}
+									var lblReady = il.DefineLabel();
+									il.Emit(OpCodes.Br_S, lblReady);
+									il.MarkLabel(lblNotNull);
+									il.Emit(OpCodes.Callvirt, fnInvoke);
+									il.MarkLabel(lblReady);
+								}
+								else
+								{
+									il.MarkLabel(lblNotNull);
 								}
 
-								// Not so fast
-								if (!Handled)
-								{
-									// Setup stack for call to converter
-									AddConverterToStack(il, converter);
-
-									// "value = rdr.GetValue(i)"
-									il.Emit(OpCodes.Ldarg_0);										// *,rdr
-									il.Emit(OpCodes.Ldc_I4, i);										// *,rdr,i
-									il.Emit(OpCodes.Callvirt, fnGetValue);							// *,value
-
-									// Call the converter
-									if (converter != null)
-										il.Emit(OpCodes.Callvirt, fnInvoke);
-
-									// Assign it
-									il.Emit(OpCodes.Unbox_Any, pc.PropertyInfo.PropertyType);		// poco,poco,value
-									il.Emit(OpCodes.Callvirt, pc.PropertyInfo.GetSetMethod(true));		// poco
-								}
-
-								il.MarkLabel(lblNext);
-							}
-
-							var fnOnLoaded = RecurseInheritedTypes<MethodInfo>(type, (x) => x.GetMethod("OnLoaded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null));
-							if (fnOnLoaded != null)
-							{
-								il.Emit(OpCodes.Dup);
-								il.Emit(OpCodes.Callvirt, fnOnLoaded);
+								il.Emit(OpCodes.Callvirt, fnAdd);
 							}
 						}
+						else
+#endif
+							if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
+							{
+								// Do we need to install a converter?
+								var srcType = r.GetFieldType(0);
+								var converter = GetConverter(mapper, null, srcType, type);
 
-					il.Emit(OpCodes.Ret);
+								// "if (!rdr.IsDBNull(i))"
+								il.Emit(OpCodes.Ldarg_0);										// rdr
+								il.Emit(OpCodes.Ldc_I4_0);										// rdr,0
+								il.Emit(OpCodes.Callvirt, fnIsDBNull);							// bool
+								var lblCont = il.DefineLabel();
+								il.Emit(OpCodes.Brfalse_S, lblCont);
+								il.Emit(OpCodes.Ldnull);										// null
+								var lblFin = il.DefineLabel();
+								il.Emit(OpCodes.Br_S, lblFin);
 
-					// Cache it, return it
-					return m.CreateDelegate(Expression.GetFuncType(typeof(IDataReader), type));
+								il.MarkLabel(lblCont);
+
+								// Setup stack for call to converter
+								AddConverterToStack(il, converter);
+
+								il.Emit(OpCodes.Ldarg_0);										// rdr
+								il.Emit(OpCodes.Ldc_I4_0);										// rdr,0
+								il.Emit(OpCodes.Callvirt, fnGetValue);							// value
+
+								// Call the converter
+								if (converter != null)
+									il.Emit(OpCodes.Callvirt, fnInvoke);
+
+								il.MarkLabel(lblFin);
+								il.Emit(OpCodes.Unbox_Any, type);								// value converted
+							}
+							else
+							{
+								// var poco=new T()
+								il.Emit(OpCodes.Newobj, type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null));
+
+								// Enumerate all fields generating a set assignment for the column
+								for (int i = firstColumn; i < firstColumn + countColumns; i++)
+								{
+									// Get the PocoColumn for this db column, ignore if not known
+									PocoColumn pc;
+									if (!Columns.TryGetValue(r.GetName(i), out pc))
+										continue;
+
+									// Get the source type for this column
+									var srcType = r.GetFieldType(i);
+									var dstType = pc.PropertyInfo.PropertyType;
+
+									// "if (!rdr.IsDBNull(i))"
+									il.Emit(OpCodes.Ldarg_0);										// poco,rdr
+									il.Emit(OpCodes.Ldc_I4, i);										// poco,rdr,i
+									il.Emit(OpCodes.Callvirt, fnIsDBNull);							// poco,bool
+									var lblNext = il.DefineLabel();
+									il.Emit(OpCodes.Brtrue_S, lblNext);								// poco
+
+									il.Emit(OpCodes.Dup);											// poco,poco
+
+									// Do we need to install a converter?
+									var converter = GetConverter(mapper, pc, srcType, dstType);
+
+									// Fast
+									bool Handled = false;
+									if (converter == null)
+									{
+										var valuegetter = typeof(IDataRecord).GetMethod("Get" + srcType.Name, new Type[] { typeof(int) });
+										if (valuegetter != null
+												&& valuegetter.ReturnType == srcType
+												&& (valuegetter.ReturnType == dstType || valuegetter.ReturnType == Nullable.GetUnderlyingType(dstType)))
+										{
+											il.Emit(OpCodes.Ldarg_0);										// *,rdr
+											il.Emit(OpCodes.Ldc_I4, i);										// *,rdr,i
+											il.Emit(OpCodes.Callvirt, valuegetter);							// *,value
+
+											// Convert to Nullable
+											if (Nullable.GetUnderlyingType(dstType) != null)
+											{
+												il.Emit(OpCodes.Newobj, dstType.GetConstructor(new Type[] { Nullable.GetUnderlyingType(dstType) }));
+											}
+
+											il.Emit(OpCodes.Callvirt, pc.PropertyInfo.GetSetMethod(true));		// poco
+											Handled = true;
+										}
+									}
+
+									// Not so fast
+									if (!Handled)
+									{
+										// Setup stack for call to converter
+										AddConverterToStack(il, converter);
+
+										// "value = rdr.GetValue(i)"
+										il.Emit(OpCodes.Ldarg_0);										// *,rdr
+										il.Emit(OpCodes.Ldc_I4, i);										// *,rdr,i
+										il.Emit(OpCodes.Callvirt, fnGetValue);							// *,value
+
+										// Call the converter
+										if (converter != null)
+											il.Emit(OpCodes.Callvirt, fnInvoke);
+
+										// Assign it
+										il.Emit(OpCodes.Unbox_Any, pc.PropertyInfo.PropertyType);		// poco,poco,value
+										il.Emit(OpCodes.Callvirt, pc.PropertyInfo.GetSetMethod(true));		// poco
+									}
+
+									il.MarkLabel(lblNext);
+								}
+
+								var fnOnLoaded = RecurseInheritedTypes<MethodInfo>(type, (x) => x.GetMethod("OnLoaded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null));
+								if (fnOnLoaded != null)
+								{
+									il.Emit(OpCodes.Dup);
+									il.Emit(OpCodes.Callvirt, fnOnLoaded);
+								}
+							}
+
+						il.Emit(OpCodes.Ret);
+
+						// Cache it, return it
+						return m.CreateDelegate(Expression.GetFuncType(typeof(IDataReader), type));
 					}
 				);
 			}
@@ -3716,7 +3797,7 @@ namespace PetaPoco
 				}
 
 				// Standard DateTime->Utc mapper
-				if (pc!=null && pc.ForceToUtc && srcType == typeof(DateTime) && (dstType == typeof(DateTime) || dstType == typeof(DateTime?)))
+				if (pc != null && pc.ForceToUtc && srcType == typeof(DateTime) && (dstType == typeof(DateTime) || dstType == typeof(DateTime?)))
 				{
 					return delegate(object src) { return new DateTime(((DateTime)src).Ticks, DateTimeKind.Utc); };
 				}
