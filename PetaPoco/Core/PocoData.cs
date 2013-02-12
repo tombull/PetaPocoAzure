@@ -1,4 +1,4 @@
-﻿// PetaPoco - A Tiny ORMish thing for your POCO's.
+﻿// PetaPocoAzure - A Tiny ORMish thing for your POCO's.
 // Copyright © 2011-2012 Topten Software.  All Rights Reserved.
 
 using System;
@@ -8,16 +8,16 @@ using System.Data;
 using System.Reflection.Emit;
 using System.Linq;
 using System.Linq.Expressions;
-using PetaPoco.Internal;
+using PetaPocoAzure.Internal;
 
-namespace PetaPoco.Internal
+namespace PetaPocoAzure.Internal
 {
     class PocoData
     {
         public static PocoData ForObject(object o, IList<string> primaryKeyNames)
         {
             var t = o.GetType();
-#if !PETAPOCO_NO_DYNAMIC
+#if !PetaPocoAzure_NO_DYNAMIC
             if (t == typeof(System.Dynamic.ExpandoObject))
             {
                 var pd = new PocoData();
@@ -43,7 +43,7 @@ namespace PetaPoco.Internal
 
         public static PocoData ForType(Type t)
         {
-#if !PETAPOCO_NO_DYNAMIC
+#if !PetaPocoAzure_NO_DYNAMIC
             if (t == typeof(System.Dynamic.ExpandoObject))
                 throw new InvalidOperationException("Can't use dynamic types with this method");
 #endif
@@ -103,11 +103,11 @@ namespace PetaPoco.Internal
             return PocoFactories.Get(key, () =>
                 {
                     // Create the method
-                    var m = new DynamicMethod("petapoco_factory_" + PocoFactories.Count.ToString(), type, new Type[] { typeof(IDataReader) }, true);
+                    var m = new DynamicMethod("PetaPocoAzure_factory_" + PocoFactories.Count.ToString(), type, new Type[] { typeof(IDataReader) }, true);
                     var il = m.GetILGenerator();
                     var mapper = Mappers.GetMapper(type);
 
-#if !PETAPOCO_NO_DYNAMIC
+#if !PetaPocoAzure_NO_DYNAMIC
                     if (type == typeof(object))
                     {
                         // var poco=new T()

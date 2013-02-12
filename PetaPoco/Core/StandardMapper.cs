@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace PetaPoco
+namespace PetaPocoAzure
 {
 	/// <summary>
-	/// StandardMapper is the default implementation of IMapper used by PetaPoco
+	/// StandardMapper is the default implementation of IMapper used by PetaPocoAzure
 	/// </summary>
 	public class StandardMapper : IMapper
 	{

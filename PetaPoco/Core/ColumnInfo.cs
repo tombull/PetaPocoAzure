@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace PetaPoco
+namespace PetaPocoAzure
 {
 	/// <summary>
 	/// Hold information about a column in the database.

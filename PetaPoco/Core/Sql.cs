@@ -1,13 +1,13 @@
-﻿// PetaPoco - A Tiny ORMish thing for your POCO's.
+﻿// PetaPocoAzure - A Tiny ORMish thing for your POCO's.
 // Copyright © 2011-2012 Topten Software.  All Rights Reserved.
  
 using System;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
-using PetaPoco.Internal;
+using PetaPocoAzure.Internal;
 
-namespace PetaPoco
+namespace PetaPocoAzure
 {
 	/// <summary>
 	/// A simple helper class for build SQL statements

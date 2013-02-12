@@ -1,10 +1,10 @@
-﻿// PetaPoco - A Tiny ORMish thing for your POCO's.
+﻿// PetaPocoAzure - A Tiny ORMish thing for your POCO's.
 // Copyright © 2011-2012 Topten Software.  All Rights Reserved.
 
 using System;
 using System.Collections.Generic;
 
-namespace PetaPoco
+namespace PetaPocoAzure
 {
     /// <summary>
     /// Use by IMapper to override table bindings for an object
@@ -39,16 +39,6 @@ namespace PetaPoco
         }
 
         /// <summary>
-        /// The name of the sequence used for auto-incrementing Oracle primary key fields
-        /// </summary>
-        public string SequenceName
-        {
-            get;
-            set;
-        }
-
-
-        /// <summary>
         /// Creates and populates a TableInfo from the attributes of a POCO
         /// </summary>
         /// <param name="t">The POCO type</param>
@@ -64,7 +54,6 @@ namespace PetaPoco
             // Get the primary key
             a = t.GetCustomAttributes(typeof(PrimaryKeyAttribute), true);
             ti.PrimaryKeys = a.Length == 0 ? new List<string>() { ti.TableName + "Id" } : (a[0] as PrimaryKeyAttribute).Value;
-            ti.SequenceName = a.Length == 0 ? null : (a[0] as PrimaryKeyAttribute).sequenceName;
             ti.AutoIncrement = a.Length == 0 ? false : (a[0] as PrimaryKeyAttribute).autoIncrement;
 
             return ti;

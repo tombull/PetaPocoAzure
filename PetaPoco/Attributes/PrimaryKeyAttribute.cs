@@ -1,15 +1,16 @@
-﻿// PetaPoco - A Tiny ORMish thing for your POCO's.
+﻿// PetaPocoAzure - A Tiny ORMish thing for your POCO's.
 // Copyright © 2011-2012 Topten Software.  All Rights Reserved.
+
+// Modified Tom Bull 2013
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PetaPoco
+namespace PetaPocoAzure
 {
     /// <summary>
     /// Specifies the primary key column of a poco class, whether the column is auto incrementing
-    /// and the sequence name for Oracle sequence columns.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class PrimaryKeyAttribute : Attribute
@@ -30,12 +31,6 @@ namespace PetaPoco
         {
             get;
             private set;
-        }
-
-        public string sequenceName
-        {
-            get;
-            set;
         }
 
         public bool autoIncrement

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace PetaPoco.Internal
+namespace PetaPocoAzure.Internal
 {
 	class Cache<TKey, TValue>
 	{

@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0"?>
 <package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-		<id>PetaPoco</id>
-		<title>PetaPoco - A tiny ORMish thing for your POCOs (Core + T4 Templates)</title>
+		<id>PetaPocoAzure</id>
+		<title>PetaPocoAzure - A tiny ORMish thing for your POCOs (Core + T4 Templates)</title>
 		<version>5.0.1</version>
-		<authors>Topten Software</authors>
-		<owners>Topten Software</owners>
-		<licenseUrl>http://www.toptensoftware.com/petapoco/license</licenseUrl>
-		<projectUrl>http://www.toptensoftware.com/petapoco/</projectUrl>
-		<iconUrl>http://www.toptensoftware.com/petapoco/nuget_icon.png</iconUrl>
+		<authors>Tom Bull</authors>
+		<owners>Tom Bull</owners>
+		<licenseUrl>http://www.toptensoftware.com/PetaPoco/license</licenseUrl>
+		<projectUrl>http://www.toptensoftware.com/PetaPoco/</projectUrl>
+		<iconUrl>http://www.toptensoftware.com/PetaPoco/nuget_icon.png</iconUrl>
 		<requireLicenseAcceptance>true</requireLicenseAcceptance>
 		<description>
-PetaPoco is a tiny, single file .NET data access layer inspired by Massive that works with both non-dynamic POCO objects and dynamics.
+PetaPocoAzure is a tiny, single file .NET data access layer inspired by Massive that works with both non-dynamic POCO objects and dynamics.
 
-This package includes the core PetaPoco library + T4 templates to generate POCO classes from your database
+This package includes the core PetaPocoAzure library + T4 templates to generate POCO classes from your database
 		</description>
 		<tags>ORM POCO MVC MVC2 MVC3 ASP.NET WebForms WebMatrix MySQL Database</tags>
 		<frameworkAssemblies>
@@ -22,8 +22,8 @@ This package includes the core PetaPoco library + T4 templates to generate POCO 
 		</frameworkAssemblies>
 	</metadata>
 	<files>
-		<file src="PetaPoco.cs" target="Content\Models" />
+		<file src="PetaPocoAzure.cs" target="Content\Models" />
 		<file src="Models\Generated\*.tt" target="Content\Models\Generated" />
-		<file src="Models\Generated\PetaPoco*" target="Content\Models\Generated" />
+		<file src="Models\Generated\PetaPocoAzure*" target="Content\Models\Generated" />
 	</files>
 </package>

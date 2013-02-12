@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Threading;
-using PetaPoco.Internal;
+using PetaPocoAzure.Internal;
 
-namespace PetaPoco
+namespace PetaPocoAzure
 {
 	/// <summary>
-	/// This static manages registation of IMapper instances with PetaPoco
+	/// This static manages registation of IMapper instances with PetaPocoAzure
 	/// </summary>
 	public static class Mappers
 	{

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace PetaPoco.Internal
+namespace PetaPocoAzure.Internal
 {
 	static class AutoSelectHelper
 	{

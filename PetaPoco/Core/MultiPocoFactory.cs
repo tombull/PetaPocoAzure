@@ -1,4 +1,4 @@
-﻿// PetaPoco - A Tiny ORMish thing for your POCO's.
+﻿// PetaPocoAzure - A Tiny ORMish thing for your POCO's.
 // Copyright © 2011-2012 Topten Software.  All Rights Reserved.
  
 using System;
@@ -9,7 +9,7 @@ using System.Reflection.Emit;
 using System.Linq.Expressions;
 using System.Data;
 
-namespace PetaPoco.Internal
+namespace PetaPocoAzure.Internal
 {
 	class MultiPocoFactory
 	{
@@ -26,7 +26,7 @@ namespace PetaPoco.Internal
 			return AutoMappers.Get(key, () =>
 				{
 					// Create a method
-					var m = new DynamicMethod("petapoco_automapper", types[0], types, true);
+					var m = new DynamicMethod("PetaPocoAzure_automapper", types[0], types, true);
 					var il = m.GetILGenerator();
 
 					for (int i = 1; i < types.Length; i++)
@@ -92,7 +92,7 @@ namespace PetaPoco.Internal
 		// Create a multi-poco factory
 		static Func<IDataReader, object, TRet> CreateMultiPocoFactory<TRet>(Type[] types, string ConnectionString, string sql, IDataReader r)
 		{
-			var m = new DynamicMethod("petapoco_multipoco_factory", typeof(TRet), new Type[] { typeof(MultiPocoFactory), typeof(IDataReader), typeof(object) }, typeof(MultiPocoFactory));
+			var m = new DynamicMethod("PetaPocoAzure_multipoco_factory", typeof(TRet), new Type[] { typeof(MultiPocoFactory), typeof(IDataReader), typeof(object) }, typeof(MultiPocoFactory));
 			var il = m.GetILGenerator();
 
 			// Load the callback

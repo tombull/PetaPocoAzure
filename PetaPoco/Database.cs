@@ -1,14 +1,16 @@
-﻿/* PetaPoco - A Tiny ORMish thing for your POCO's.
+﻿/* PetaPocoAzure - A Tiny ORMish thing for your POCO's.
  * Copyright © 2011-2012 Topten Software.  All Rights Reserved.
  * 
- * Apache License 2.0 - http://www.toptensoftware.com/petapoco/license
+ * Apache License 2.0 - http://www.toptensoftware.com/PetaPocoAzure/license
  * 
  * Special thanks to Rob Conery (@robconery) for original inspiration (ie:Massive) and for 
  * use of Subsonic's T4 templates, Rob Sullivan (@DataChomp) for hard core DBA advice 
  * and Adam Schroder (@schotime) for lots of suggestions, improvements and Oracle support
  */
 
-// Define PETAPOCO_NO_DYNAMIC in your project settings on .NET 3.5
+// Modified by Tom Bull 2013
+
+// Define PetaPocoAzure_NO_DYNAMIC in your project settings on .NET 3.5
 
 using System;
 using System.Collections.Generic;
@@ -21,93 +23,36 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Linq.Expressions;
-using PetaPoco.Internal;
+using PetaPocoAzure.Internal;
+using Microsoft.Practices.EnterpriseLibrary.WindowsAzure.TransientFaultHandling.SqlAzure;
+using Microsoft.Practices.EnterpriseLibrary.WindowsAzure.TransientFaultHandling;
+using Microsoft.Practices.EnterpriseLibrary.WindowsAzure.TransientFaultHandling.Configuration;
+using Microsoft.Practices.TransientFaultHandling;
+using System.Data.SqlClient;
 
 
-namespace PetaPoco
+namespace PetaPocoAzure
 {
     /// <summary>
-    /// The main PetaPoco Database class.  You can either use this class directly, or derive from it.
+    /// The main PetaPocoAzure Database class.  You can either use this class directly, or derive from it.
     /// </summary>
     public class Database : IDisposable
     {
         #region Constructors
         /// <summary>
-        /// Construct a database using a supplied IDbConnection
-        /// </summary>
-        /// <param name="connection">The IDbConnection to use</param>
-        /// <remarks>
-        /// The supplied IDbConnection will not be closed/disposed by PetaPoco - that remains
-        /// the responsibility of the caller.
-        /// </remarks>
-        public Database(IDbConnection connection)
-        {
-            _sharedConnection = connection;
-            _connectionString = connection.ConnectionString;
-            if (connection.State == ConnectionState.Broken)
-            {
-                connection.Close();
-            }
-            if (connection.State != ConnectionState.Closed)
-            {
-                _sharedConnectionDepth = 2;		// Prevent closing already open external connection
-            }
-            CommonConstruct();
-        }
-
-        /// <summary>
-        /// Construct a database using a supplied connections string and optionally a provider name
-        /// </summary>
-        /// <param name="connectionString">The DB connection string</param>
-        /// <param name="providerName">The name of the DB provider to use</param>
-        /// <remarks>
-        /// PetaPoco will automatically close and dispose any connections it creates.
-        /// </remarks>
-        public Database(string connectionString, string providerName)
-        {
-            _connectionString = connectionString;
-            _providerName = providerName;
-            CommonConstruct();
-        }
-
-        /// <summary>
-        /// Construct a Database using a supplied connection string and a DbProviderFactory
-        /// </summary>
-        /// <param name="connectionString">The connection string to use</param>
-        /// <param name="provider">The DbProviderFactory to use for instantiating IDbConnection's</param>
-        public Database(string connectionString, DbProviderFactory provider)
-        {
-            _connectionString = connectionString;
-            _factory = provider;
-            CommonConstruct();
-        }
-
-        /// <summary>
         /// Construct a Database using a supplied connectionString Name.  The actual connection string and provider will be 
         /// read from app/web.config.
         /// </summary>
         /// <param name="connectionStringName">The name of the connection</param>
-        public Database(string connectionStringName)
+        public Database(string connectionStringName, RetryPolicy<SqlAzureTransientErrorDetectionStrategy> RetryPolicy)
         {
             // Use first?
             if (connectionStringName == "")
                 connectionStringName = ConfigurationManager.ConnectionStrings[0].Name;
 
-            // Work out connection string and provider name
-            var providerName = "System.Data.SqlClient";
-            if (ConfigurationManager.ConnectionStrings[connectionStringName] != null)
-            {
-                if (!string.IsNullOrEmpty(ConfigurationManager.ConnectionStrings[connectionStringName].ProviderName))
-                    providerName = ConfigurationManager.ConnectionStrings[connectionStringName].ProviderName;
-            }
-            else
-            {
-                throw new InvalidOperationException("Can't find a connection string with the name '" + connectionStringName + "'");
-            }
-
-            // Store factory and connection string
             _connectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
-            _providerName = providerName;
+
+            _retryPolicy = RetryPolicy;
             CommonConstruct();
         }
 
@@ -121,13 +66,7 @@ namespace PetaPoco
             EnableAutoSelect = true;
             EnableNamedParams = true;
 
-            // If a provider name was supplied, get the IDbProviderFactory for it
-            if (_providerName != null)
-                _factory = DbProviderFactories.GetFactory(_providerName);
-
-            // Resolve the DB Type
-            string DBTypeName = (_factory == null ? _sharedConnection.GetType() : _factory.GetType()).Name;
-            _dbType = DatabaseType.Resolve(DBTypeName, _providerName);
+            _dbType = DatabaseType.Resolve();
 
             // What character is used for delimiting parameters in SQL
             _paramPrefix = _dbType.GetParameterPrefix(_connectionString);
@@ -167,9 +106,9 @@ namespace PetaPoco
         {
             if (_sharedConnectionDepth == 0)
             {
-                _sharedConnection = _factory.CreateConnection();
+                _sharedConnection = new ReliableSqlConnection(_connectionString, _retryPolicy);
                 _sharedConnection.ConnectionString = _connectionString;
-
+                
                 if (_sharedConnection.State == ConnectionState.Broken)
                     _sharedConnection.Close();
 
@@ -204,7 +143,7 @@ namespace PetaPoco
         /// <summary>
         /// Provides access to the currently open shared connection (or null if none)
         /// </summary>
-        public IDbConnection Connection
+        public ReliableSqlConnection Connection
         {
             get { return _sharedConnection; }
         }
@@ -265,7 +204,7 @@ namespace PetaPoco
             if (_transactionDepth == 1)
             {
                 OpenSharedConnection();
-                _transaction = _sharedConnection.BeginTransaction();
+                _transaction = (SqlTransaction)_sharedConnection.BeginTransaction();
                 _transactionCancelled = false;
                 OnBeginTransaction();
             }
@@ -319,10 +258,10 @@ namespace PetaPoco
         /// <summary>
         /// Add a parameter to a DB command
         /// </summary>
-        /// <param name="cmd">A reference to the IDbCommand to which the parameter is to be added</param>
+        /// <param name="cmd">A reference to the SqlCommand to which the parameter is to be added</param>
         /// <param name="value">The value to assign to the parameter</param>
         /// <param name="pi">Optional, a reference to the property info of the POCO property from which the value is coming.</param>
-        void AddParam(IDbCommand cmd, object value, PropertyInfo pi)
+        void AddParam(SqlCommand cmd, object value, PropertyInfo pi)
         {
             // Convert value to from poco type to db type
             if (pi != null)
@@ -406,7 +345,7 @@ namespace PetaPoco
 
         // Create a command
         static Regex rxParamsPrefix = new Regex(@"(?<!@)@\w+", RegexOptions.Compiled);
-        public IDbCommand CreateCommand(IDbConnection connection, string sql, params object[] args)
+        public SqlCommand CreateCommand(ReliableSqlConnection connection, string sql, params object[] args)
         {
             // Perform named argument replacements
             if (EnableNamedParams)
@@ -422,17 +361,13 @@ namespace PetaPoco
             sql = sql.Replace("@@", "@");		   // <- double @@ escapes a single @
 
             // Create the command and add parameters
-            IDbCommand cmd = connection.CreateCommand();
-            cmd.Connection = connection;
+            SqlCommand cmd = connection.CreateCommand();
             cmd.CommandText = sql;
             cmd.Transaction = _transaction;
             foreach (var item in args)
             {
                 AddParam(cmd, item, null);
             }
-
-            // Notify the DB type
-            _dbType.PreExecute(cmd);
 
             // Call logging
             if (!String.IsNullOrEmpty(sql))
@@ -459,13 +394,13 @@ namespace PetaPoco
         /// <summary>
         /// Called when DB connection opened
         /// </summary>
-        /// <param name="conn">The newly opened IDbConnection</param>
-        /// <returns>The same or a replacement IDbConnection</returns>
+        /// <param name="conn">The newly opened ReliableSqlConnection</param>
+        /// <returns>The same or a replacement ReliableSqlConnection</returns>
         /// <remarks>
         /// Override this method to provide custom logging of opening connection, or
-        /// to provide a proxy IDbConnection.
+        /// to provide a proxy ReliableSqlConnection.
         /// </remarks>
-        public virtual IDbConnection OnConnectionOpened(IDbConnection conn)
+        public virtual ReliableSqlConnection OnConnectionOpened(ReliableSqlConnection conn)
         {
             return conn;
         }
@@ -473,8 +408,8 @@ namespace PetaPoco
         /// <summary>
         /// Called when DB connection closed
         /// </summary>
-        /// <param name="conn">The soon to be closed IDBConnection</param>
-        public virtual void OnConnectionClosing(IDbConnection conn)
+        /// <param name="conn">The soon to be closed ReliableSqlConnection</param>
+        public virtual void OnConnectionClosing(ReliableSqlConnection conn)
         {
         }
 
@@ -484,17 +419,17 @@ namespace PetaPoco
         /// <param name="cmd">The command to be executed</param>
         /// <remarks>
         /// Override this method to provide custom logging of commands and/or
-        /// modification of the IDbCommand before it's executed
+        /// modification of the SqlCommand before it's executed
         /// </remarks>
-        public virtual void OnExecutingCommand(IDbCommand cmd)
+        public virtual void OnExecutingCommand(SqlCommand cmd)
         {
         }
 
         /// <summary>
         /// Called on completion of command execution
         /// </summary>
-        /// <param name="cmd">The IDbCommand that finished executing</param>
-        public virtual void OnExecutedCommand(IDbCommand cmd)
+        /// <param name="cmd">The SqlCommand that finished executing</param>
+        public virtual void OnExecutedCommand(SqlCommand cmd)
         {
         }
 
@@ -516,7 +451,7 @@ namespace PetaPoco
                 {
                     using (var cmd = CreateCommand(_sharedConnection, sql, args))
                     {
-                        var retv = cmd.ExecuteNonQuery();
+                        var retv = cmd.ExecuteNonQueryWithRetry(_retryPolicy, _retryPolicy);
                         OnExecutedCommand(cmd);
                         return retv;
                     }
@@ -564,7 +499,7 @@ namespace PetaPoco
                 {
                     using (var cmd = CreateCommand(_sharedConnection, sql, args))
                     {
-                        object val = cmd.ExecuteScalar();
+                        object val = cmd.ExecuteScalarWithRetry(_retryPolicy, _retryPolicy);
                         OnExecutedCommand(cmd);
 
                         // Handle nullable types
@@ -708,7 +643,7 @@ namespace PetaPoco
         /// <param name="args">Arguments to any embedded parameters in the SQL statement</param>
         /// <returns>A Page of results</returns>
         /// <remarks>
-        /// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
+        /// PetaPocoAzure will automatically modify the supplied SELECT statement to only retrieve the
         /// records for the specified page.  It will also execute a second query to retrieve the
         /// total number of records in the result set.
         /// </remarks>
@@ -728,7 +663,7 @@ namespace PetaPoco
         /// <param name="sql">a SQL builder object representing the base SQL query and it's arguments</param>
         /// <returns>A Page of results</returns>
         /// <remarks>
-        /// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
+        /// PetaPocoAzure will automatically modify the supplied SELECT statement to only retrieve the
         /// records for the specified page.  It will also execute a second query to retrieve the
         /// total number of records in the result set.
         /// </remarks>
@@ -769,7 +704,7 @@ namespace PetaPoco
         /// <param name="args">Arguments to any embedded parameters in the SQL statement</param>
         /// <returns>A List of results</returns>
         /// <remarks>
-        /// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
+        /// PetaPocoAzure will automatically modify the supplied SELECT statement to only retrieve the
         /// records for the specified page.
         /// </remarks>
         public List<T> Fetch<T>(long page, long itemsPerPage, string sql, params object[] args)
@@ -786,7 +721,7 @@ namespace PetaPoco
         /// <param name="sql">a SQL builder object representing the base SQL query and it's arguments</param>
         /// <returns>A List of results</returns>
         /// <remarks>
-        /// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
+        /// PetaPocoAzure will automatically modify the supplied SELECT statement to only retrieve the
         /// records for the specified page.
         /// </remarks>
         public List<T> Fetch<T>(long page, long itemsPerPage, Sql sql)
@@ -808,7 +743,7 @@ namespace PetaPoco
         /// <param name="args">Arguments to any embedded parameters in the SQL statement</param>
         /// <returns>A List of results</returns>
         /// <remarks>
-        /// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
+        /// PetaPocoAzure will automatically modify the supplied SELECT statement to only retrieve the
         /// records for the specified range.
         /// </remarks>
         public List<T> SkipTake<T>(long skip, long take, string sql, params object[] args)
@@ -827,7 +762,7 @@ namespace PetaPoco
         /// <param name="sql">a SQL builder object representing the base SQL query and it's arguments</param>
         /// <returns>A List of results</returns>
         /// <remarks>
-        /// PetaPoco will automatically modify the supplied SELECT statement to only retrieve the
+        /// PetaPocoAzure will automatically modify the supplied SELECT statement to only retrieve the
         /// records for the specified range.
         /// </remarks>
         public List<T> SkipTake<T>(long skip, long take, Sql sql)
@@ -864,7 +799,7 @@ namespace PetaPoco
                     var pd = PocoData.ForType(typeof(T));
                     try
                     {
-                        r = cmd.ExecuteReader();
+                        r = cmd.ExecuteReaderWithRetry(_retryPolicy, _retryPolicy);
                         OnExecutedCommand(cmd);
                     }
                     catch (Exception x)
@@ -1130,7 +1065,6 @@ namespace PetaPoco
                             if (i.Value.ResultColumn)
                                 continue;
 
-                            // Don't insert the primary key (except under oracle where we need bring in the next sequence value)
                             if (autoIncrement && primaryKeyNames[0] != null && string.Compare(i.Key, primaryKeyNames[0], true) == 0)
                             {
                                 // Setup auto increment expression
@@ -1165,7 +1099,7 @@ namespace PetaPoco
                         if (!autoIncrement)
                         {
                             DoPreExecute(cmd);
-                            cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQueryWithRetry(_retryPolicy, _retryPolicy);
                             OnExecutedCommand(cmd);
 
                             return null;
@@ -1325,7 +1259,7 @@ namespace PetaPoco
                         DoPreExecute(cmd);
 
                         // Do it
-                        var retv = cmd.ExecuteNonQuery();
+                        var retv = cmd.ExecuteNonQueryWithRetry(_retryPolicy, _retryPolicy);
                         OnExecutedCommand(cmd);
                         return retv;
                     }
@@ -1555,7 +1489,7 @@ namespace PetaPoco
                 {
                     pks.Add(pc.GetValue(poco));
                 }
-#if !PETAPOCO_NO_DYNAMIC
+#if !PetaPocoAzure_NO_DYNAMIC
                 else if (poco.GetType() == typeof(System.Dynamic.ExpandoObject))
                 {
                     return true;
@@ -1947,7 +1881,7 @@ namespace PetaPoco
                     IDataReader r;
                     try
                     {
-                        r = cmd.ExecuteReader();
+                        r = cmd.ExecuteReaderWithRetry(_retryPolicy, _retryPolicy);
                         OnExecutedCommand(cmd);
                     }
                     catch (Exception x)
@@ -2031,7 +1965,7 @@ namespace PetaPoco
         /// </summary>
         /// <param name="cmd"></param>
         /// <returns></returns>
-        public string FormatCommand(IDbCommand cmd)
+        public string FormatCommand(SqlCommand cmd)
         {
             return FormatCommand(cmd.CommandText, (from IDataParameter parameter in cmd.Parameters select parameter.Value).ToArray());
         }
@@ -2071,7 +2005,7 @@ namespace PetaPoco
         } */
 
         /// <summary>
-        /// When set to true, PetaPoco will automatically create the "SELECT columns" part of any query that looks like it needs it
+        /// When set to true, PetaPocoAzure will automatically create the "SELECT columns" part of any query that looks like it needs it
         /// </summary>
         public bool EnableAutoSelect
         {
@@ -2111,16 +2045,15 @@ namespace PetaPoco
         // Member variables
         internal DatabaseType _dbType;
         string _connectionString;
-        string _providerName;
-        DbProviderFactory _factory;
-        IDbConnection _sharedConnection;
-        IDbTransaction _transaction;
         int _sharedConnectionDepth;
+        ReliableSqlConnection _sharedConnection;
+        SqlTransaction _transaction;
         int _transactionDepth;
         bool _transactionCancelled;
         string _lastSql;
         object[] _lastArgs;
         string _paramPrefix;
+        RetryPolicy<SqlAzureTransientErrorDetectionStrategy> _retryPolicy;
         #endregion
 
         #region Internal operations
@@ -2156,22 +2089,22 @@ namespace PetaPoco
             return sqlExpression.ToString();
         }
 
-        internal void ExecuteNonQueryHelper(IDbCommand cmd)
+        internal void ExecuteNonQueryHelper(SqlCommand cmd)
         {
             DoPreExecute(cmd);
-            cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQueryWithRetry(_retryPolicy, _retryPolicy);
             OnExecutedCommand(cmd);
         }
 
-        internal object ExecuteScalarHelper(IDbCommand cmd)
+        internal object ExecuteScalarHelper(SqlCommand cmd)
         {
             DoPreExecute(cmd);
-            object r = cmd.ExecuteScalar();
+            object r = cmd.ExecuteScalarWithRetry(_retryPolicy, _retryPolicy);
             OnExecutedCommand(cmd);
             return r;
         }
 
-        internal void DoPreExecute(IDbCommand cmd)
+        internal void DoPreExecute(SqlCommand cmd)
         {
             // Setup command timeout
             if (OneTimeCommandTimeout != 0)

@@ -1,18 +1,18 @@
-﻿// PetaPoco - A Tiny ORMish thing for your POCO's.
+﻿// PetaPocoAzure - A Tiny ORMish thing for your POCO's.
 // Copyright © 2011-2012 Topten Software.  All Rights Reserved.
  
 using System;
 using System.Reflection;
 
-namespace PetaPoco
+namespace PetaPocoAzure
 {
 	/// <summary>
-	/// IMapper provides a way to hook into PetaPoco's Database to POCO mapping mechanism to either
+	/// IMapper provides a way to hook into PetaPocoAzure's Database to POCO mapping mechanism to either
 	/// customize or completely replace it.
 	/// </summary>
 	/// <remarks>
 	/// To use this functionality, instantiate a class that implements IMapper and then pass it to
-	/// PetaPoco through the static method Mappers.Register()
+	/// PetaPocoAzure through the static method Mappers.Register()
 	/// </remarks>
 	public interface IMapper
 	{
