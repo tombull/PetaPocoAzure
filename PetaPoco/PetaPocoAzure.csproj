@@ -118,13 +118,13 @@
     <Compile Include="Utilities\Cache.cs" />
     <Compile Include="Utilities\EnumMapper.cs" />
     <Compile Include="Utilities\Singleton.cs" />
+    <None Include="T4 Templates\PetaPocoAzure.Core.ttinclude" />
+    <None Include="T4 Templates\PetaPocoAzure.Generator.ttinclude" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NuGet\PetaPoco.Core.nuspec">
       <SubType>Designer</SubType>
     </None>
-    <None Include="T4 Templates\PetaPoco.Core.ttinclude" />
-    <None Include="T4 Templates\PetaPoco.Generator.ttinclude" />
     <None Include="T4 Templates\Database.tt">
       <LastGenOutput>Database.cs</LastGenOutput>
     </None>
