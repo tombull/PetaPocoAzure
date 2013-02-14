@@ -1244,7 +1244,7 @@ namespace PetaPocoAzure
 
 
 
-                        cmd.CommandText = string.Format("UPDATE {0} SET {1} WHERE {3}",
+                        cmd.CommandText = string.Format("UPDATE {0} SET {1} WHERE {2}",
                                             _dbType.EscapeTableName(tableName), sb.ToString(), BuildPrimaryKeyMatchingSql(primaryKeyNames, index++));
 
                         for (int i = 0; i < primaryKeyNames.Count; i++)
