@@ -1186,6 +1186,10 @@ namespace PetaPocoAzure
                         var sb = new StringBuilder();
                         var index = 0;
                         var pd = PocoData.ForObject(poco, primaryKeyNames);
+                        if (primaryKeyValues == null || primaryKeyValues.Length == 0)
+                        {
+                            primaryKeyValues = new object[pd.TableInfo.PrimaryKeys.Count];
+                        }
                         if (columns == null)
                         {
                             foreach (var i in pd.Columns)
@@ -1280,42 +1284,6 @@ namespace PetaPocoAzure
         /// <summary>
         /// Performs a SQL update
         /// </summary>
-        /// <param name="tableName">The name of the table to update</param>
-        /// <param name="primaryKeyNames">The names of the primary key columns of the table</param>
-        /// <param name="poco">The POCO object that specifies the column values to be updated</param>
-        /// <returns>The number of affected rows</returns>
-        public int Update(string tableName, IList<string> primaryKeyNames, object poco)
-        {
-            return Update(tableName, primaryKeyNames, null, poco);
-        }
-
-        /// <summary>
-        /// Performs a SQL update
-        /// </summary>
-        /// <param name="tableName">The name of the table to update</param>
-        /// <param name="primaryKeyNames">The names of the primary key columns of the table</param>
-        /// <param name="columns">The column names of the columns to be updated, or null for all</param>
-        /// <param name="poco">The POCO object that specifies the column values to be updated</param>
-        /// <returns>The number of affected rows</returns>
-        public int Update(string tableName, IList<string> primaryKeyNames, IEnumerable<string> columns, object poco)
-        {
-            return Update(tableName, primaryKeyNames, poco, null, columns);
-        }
-
-        /// <summary>
-        /// Performs a SQL update
-        /// </summary>
-        /// <param name="poco">The POCO object that specifies the column values to be updated</param>
-        /// <param name="columns">The column names of the columns to be updated, or null for all</param>
-        /// <returns>The number of affected rows</returns>
-        public int Update(object poco, IEnumerable<string> columns)
-        {
-            return Update(poco, null, columns);
-        }
-
-        /// <summary>
-        /// Performs a SQL update
-        /// </summary>
         /// <param name="poco">The POCO object that specifies the column values to be updated</param>
         /// <returns>The number of affected rows</returns>
         public int Update(object poco)
@@ -1331,7 +1299,7 @@ namespace PetaPocoAzure
         /// <returns>The number of affected rows</returns>
         public int Update(object poco, params object[] primaryKeyValues)
         {
-            return Update(poco, primaryKeyValues, null);
+            return Update(poco, null, primaryKeyValues);
         }
 
         /// <summary>
