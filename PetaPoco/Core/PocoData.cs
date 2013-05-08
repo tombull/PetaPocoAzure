@@ -3,12 +3,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Data;
-using System.Reflection.Emit;
 using System.Linq;
 using System.Linq.Expressions;
-using PetaPocoAzure.Internal;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace PetaPocoAzure.Internal
 {

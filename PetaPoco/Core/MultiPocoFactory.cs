@@ -1,13 +1,12 @@
 ﻿// PetaPocoAzure - A Tiny ORMish thing for your POCO's.
 // Copyright © 2011-2012 Topten Software.  All Rights Reserved.
- 
+
 using System;
-using System.Text;
-using System.Linq;
 using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Linq.Expressions;
 using System.Data;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection.Emit;
 
 namespace PetaPocoAzure.Internal
 {

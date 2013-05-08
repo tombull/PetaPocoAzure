@@ -1,11 +1,10 @@
 ﻿// PetaPocoAzure - A Tiny ORMish thing for your POCO's.
 // Copyright © 2011-2012 Topten Software.  All Rights Reserved.
 
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 using PetaPocoAzure.Internal;
+using System;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace PetaPocoAzure.DatabaseTypes
 {

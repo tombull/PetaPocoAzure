@@ -10,25 +10,17 @@
 
 // Modified by Tom Bull 2013
 
-// Define PetaPocoAzure_NO_DYNAMIC in your project settings on .NET 3.5
-
+using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
+using PetaPocoAzure.Internal;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Configuration;
-using System.Data.Common;
 using System.Data;
-using System.Text.RegularExpressions;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Linq.Expressions;
-using PetaPocoAzure.Internal;
-using Microsoft.Practices.EnterpriseLibrary.WindowsAzure.TransientFaultHandling.SqlAzure;
-using Microsoft.Practices.EnterpriseLibrary.WindowsAzure.TransientFaultHandling;
-using Microsoft.Practices.EnterpriseLibrary.WindowsAzure.TransientFaultHandling.Configuration;
-using Microsoft.Practices.TransientFaultHandling;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace PetaPocoAzure
@@ -44,7 +36,7 @@ namespace PetaPocoAzure
         /// read from app/web.config.
         /// </summary>
         /// <param name="connectionStringName">The name of the connection</param>
-        public Database(string connectionStringName, RetryPolicy<SqlAzureTransientErrorDetectionStrategy> RetryPolicy)
+        public Database(string connectionStringName, RetryPolicy<SqlDatabaseTransientErrorDetectionStrategy> RetryPolicy)
         {
             // Use first?
             if (connectionStringName == "")
@@ -2021,7 +2013,7 @@ namespace PetaPocoAzure
         string _lastSql;
         object[] _lastArgs;
         string _paramPrefix;
-        RetryPolicy<SqlAzureTransientErrorDetectionStrategy> _retryPolicy;
+        RetryPolicy<SqlDatabaseTransientErrorDetectionStrategy> _retryPolicy;
         #endregion
 
         #region Internal operations
